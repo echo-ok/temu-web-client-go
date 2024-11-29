@@ -185,3 +185,8 @@ func (s *bgAuthService) LoginByCode(ctx context.Context, params BgLoginByCodeReq
 
 	return true, nil
 }
+
+// // 获取用户信息 api/seller/auth/userInfo
+// func (s *bgAuthService) GetUserInfo(ctx context.Context) (bool, error) {
+
+// }
