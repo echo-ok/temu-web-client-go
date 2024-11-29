@@ -12,16 +12,10 @@ import (
 	"time"
 
 	"github.com/bestk/temu-helper/config"
+	"github.com/bestk/temu-helper/normal"
 	"github.com/bestk/temu-helper/utils"
 	"github.com/go-resty/resty/v2"
 )
-
-type Response struct {
-	Success      bool   `json:"success"`
-	ErrorCode    int    `json:"errorCode"`
-	ErrorMessage string `json:"errorMsg"`
-	Result       any    `json:"result"`
-}
 
 type service struct {
 	debug      bool          // Is debug mode
@@ -35,17 +29,21 @@ type services struct {
 }
 
 type Client struct {
-	Debug        bool           // Is debug mode
-	Logger       *log.Logger    // Log
-	Services     services       // API services
-	TimeLocation *time.Location // Time location
+	Debug                bool           // Is debug mode
+	Logger               *log.Logger    // Log
+	Services             services       // API services
+	TimeLocation         *time.Location // Time location
+	BaseUrl              string         // Base URL
+	SellerCentralBaseUrl string         // Seller Central Base URL
 }
 
 func New(config config.TemuBrowserConfig) *Client {
 	logger := log.New(os.Stdout, "[ Temu ] ", log.LstdFlags|log.Llongfile)
 	client := &Client{
-		Debug:  config.Debug,
-		Logger: logger,
+		Debug:                config.Debug,
+		Logger:               logger,
+		BaseUrl:              config.BaseUrl,
+		SellerCentralBaseUrl: config.SellerCentralBaseUrl,
 	}
 	loc, err := time.LoadLocation("Asia/Shanghai")
 	if err != nil {
@@ -70,6 +68,12 @@ func New(config config.TemuBrowserConfig) *Client {
 				Timeout: config.Timeout * time.Second,
 			}).DialContext,
 		}).
+		SetRedirectPolicy(resty.RedirectPolicyFunc(func(req *http.Request, via []*http.Request) error {
+			if req.Response.StatusCode == 302 {
+				return nil
+			}
+			return http.ErrUseLastResponse
+		})).
 		OnBeforeRequest(func(client *resty.Client, request *resty.Request) error {
 			values := make(map[string]any)
 			if request.Body != nil {
@@ -135,14 +139,14 @@ func New(config config.TemuBrowserConfig) *Client {
 		httpClient: httpClient,
 	}
 	client.Services = services{
-		BgOrderService: bgOrderService{xService},
-		BgAuthService:  bgAuthService{xService},
+		BgOrderService: bgOrderService{xService, client},
+		BgAuthService:  bgAuthService{xService, client},
 	}
 
 	return client
 }
 
-func recheckError(resp *resty.Response, result Response, e error) (err error) {
+func recheckError(resp *resty.Response, result normal.Response, e error) (err error) {
 	if e != nil {
 		return e
 	}
@@ -157,4 +161,13 @@ func recheckError(resp *resty.Response, result Response, e error) (err error) {
 		return errors.New(result.ErrorMessage)
 	}
 	return nil
+}
+
+func parseResponseTotal(currentPage, pageSize, total int) (n, totalPages int, isLastPage bool) {
+	if currentPage == 0 {
+		currentPage = 1
+	}
+
+	totalPages = (total / pageSize) + 1
+	return total, totalPages, currentPage >= totalPages
 }

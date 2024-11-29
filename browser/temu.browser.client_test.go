@@ -9,6 +9,7 @@ import (
 
 	"github.com/bestk/temu-helper/config"
 	"github.com/bestk/temu-helper/utils"
+	"gopkg.in/guregu/null.v4"
 )
 
 func TestGetAntiContent(t *testing.T) {
@@ -22,6 +23,8 @@ func TestGetAntiContent(t *testing.T) {
 	}
 	t.Logf("获取的 Anti-Content: %s", antiContent)
 }
+
+// 测试登录
 func TestLogin(t *testing.T) {
 	b, err := os.ReadFile("../config/config_test.json")
 	if err != nil {
@@ -56,7 +59,7 @@ func TestLogin(t *testing.T) {
 		KeyVersion:      "1",
 	}
 
-	accountId, maskMobile, verifyAuthToken, err := temuClient.Services.BgAuthService.Login(ctx, bgLoginRequestParams)
+	accountId, err := temuClient.Services.BgAuthService.Login(ctx, bgLoginRequestParams)
 	if err != nil {
 		t.Errorf("登录失败: %v", err)
 	}
@@ -65,6 +68,42 @@ func TestLogin(t *testing.T) {
 		t.Error("登录成功，但返回的 AccountId 为空")
 	}
 	t.Logf("登录成功，返回的 AccountId: %d", accountId)
-	t.Logf("登录成功，返回的 MaskMobile: %s", maskMobile)
-	t.Logf("登录成功，返回的 VerifyAuthToken: %s", verifyAuthToken)
+
+	// 获取验证码
+	code, err := temuClient.Services.BgAuthService.ObtainCode(ctx, BgObtainCodeRequestParams{
+		RedirectUrl: "https://agentseller.temu.com/main/authentication",
+	})
+	if err != nil {
+		t.Errorf("获取验证码失败: %v", err)
+	}
+	t.Logf("获取验证码成功，返回的验证码: %s", code)
+
+	loginByCodeParams := BgLoginByCodeRequestParams{
+		Code:         code,
+		Confirm:      false,
+		TargetMallId: 634418212175626,
+	}
+	success, err := temuClient.Services.BgAuthService.LoginByCode(ctx, loginByCodeParams)
+	if err != nil {
+		t.Errorf("登录 Seller Central 失败: %v", err)
+	}
+	t.Logf("登录 Seller Central 成功: %v", success)
+
+	// 查询订单列表
+	params := BgOrderQueryParams{
+		QueryType:           null.NewInt(2, true),
+		FulfillmentMode:     null.NewInt(0, true),
+		SortType:            null.NewInt(1, true),
+		ParentAfterSalesTag: null.NewInt(0, true),
+		NeedBuySignService:  null.NewInt(0, true),
+		SellerNoteLabelList: []int{},
+		ParentOrderSnList:   []string{},
+		TimeZone:            null.NewString("UTC+8", true),
+	}
+	items, _, _, _, err := temuClient.Services.BgOrderService.Query(ctx, params)
+	if err != nil {
+		t.Errorf("查询订单列表失败: %v", err)
+	}
+	t.Logf("查询订单列表成功，返回的订单数量: %d", len(items))
+
 }
