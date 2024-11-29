@@ -59,8 +59,8 @@ func New(config config.TemuBrowserConfig) *Client {
 		SetHeaders(map[string]string{
 			"Content-Type": "application/json",
 			"Accept":       "application/json",
-			"User-Agent":   config.UserAgent,
 		}).
+		SetHeader("User-Agent", config.UserAgent).
 		SetAllowGetMethodPayload(true).
 		SetTimeout(config.Timeout * time.Second).
 		SetTransport(&http.Transport{
@@ -151,8 +151,8 @@ func New(config config.TemuBrowserConfig) *Client {
 		SetHeaders(map[string]string{
 			"Content-Type": "application/json",
 			"Accept":       "application/json",
-			"User-Agent":   config.UserAgent,
 		}).
+		SetHeader("User-Agent", config.UserAgent).
 		SetAllowGetMethodPayload(true).
 		SetTimeout(config.Timeout * time.Second).
 		SetTransport(&http.Transport{
