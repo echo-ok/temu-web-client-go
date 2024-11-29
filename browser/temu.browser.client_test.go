@@ -101,7 +101,7 @@ func TestLogin(t *testing.T) {
 		SellerNoteLabelList: []int{},
 		ParentOrderSnList:   []string{},
 	}
-	items, total, _, _, err := temuClient.Services.BgOrderService.Query(ctx, params)
+	items, total, _, _, err := temuClient.Services.RecentOrderService.Query(ctx, params)
 	if err != nil {
 		t.Errorf("查询订单列表失败: %v", err)
 	}
