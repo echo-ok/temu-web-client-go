@@ -24,8 +24,8 @@ type service struct {
 }
 
 type services struct {
-	BgOrderService bgOrderService
-	BgAuthService  bgAuthService
+	RecentOrderService recentOrderService
+	BgAuthService      bgAuthService
 }
 
 type Client struct {
@@ -140,8 +140,8 @@ func New(config config.TemuBrowserConfig) *Client {
 		httpClient: httpClient,
 	}
 	client.Services = services{
-		BgOrderService: bgOrderService{xService, client},
-		BgAuthService:  bgAuthService{xService, client},
+		RecentOrderService: recentOrderService{xService, client},
+		BgAuthService:      bgAuthService{xService, client},
 	}
 
 	sellerCentralClient := resty.New().

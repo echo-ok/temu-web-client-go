@@ -8,7 +8,7 @@ import (
 	"gopkg.in/guregu/null.v4"
 )
 
-type bgOrderService struct {
+type recentOrderService struct {
 	service
 	client *Client
 }
@@ -26,7 +26,7 @@ type BgOrderQueryParams struct {
 }
 
 // Query 查询订单列表
-func (s bgOrderService) Query(ctx context.Context, params BgOrderQueryParams) (items []entity.RecentOrder, total, totalPages int, isLastPage bool, err error) {
+func (s recentOrderService) Query(ctx context.Context, params BgOrderQueryParams) (items []entity.RecentOrder, total, totalPages int, isLastPage bool, err error) {
 	params.TidyPager()
 
 	var result = struct {
