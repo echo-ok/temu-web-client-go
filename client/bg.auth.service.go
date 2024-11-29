@@ -1,5 +1,5 @@
 // 基础认证服务
-package browser
+package client
 
 import (
 	"context"

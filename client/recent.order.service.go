@@ -1,5 +1,5 @@
 // 最近订单服务
-package browser
+package client
 
 import (
 	"context"

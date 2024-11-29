@@ -1,5 +1,5 @@
 // Temu 浏览器客户端
-package browser
+package client
 
 import (
 	"crypto/tls"
