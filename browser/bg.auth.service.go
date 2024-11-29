@@ -167,9 +167,7 @@ func (s *bgAuthService) LoginByCode(ctx context.Context, params BgLoginByCodeReq
 		} `json:"result"`
 	}{}
 
-	resp, err := s.httpClient.
-		SetBaseURL(s.client.SellerCentralBaseUrl).
-		R().
+	resp, err := s.client.sellerCentralClient.R().
 		SetContext(ctx).
 		SetResult(&result).
 		SetBody(params).

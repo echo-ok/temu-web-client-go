@@ -29,12 +29,13 @@ type services struct {
 }
 
 type Client struct {
-	Debug                bool           // Is debug mode
-	Logger               *log.Logger    // Log
-	Services             services       // API services
-	TimeLocation         *time.Location // Time location
-	BaseUrl              string         // Base URL
-	SellerCentralBaseUrl string         // Seller Central Base URL
+	Debug                bool
+	Logger               *log.Logger
+	Services             services
+	TimeLocation         *time.Location
+	BaseUrl              string
+	SellerCentralBaseUrl string
+	sellerCentralClient  *resty.Client // SellerCentral专用客户端
 }
 
 func New(config config.TemuBrowserConfig) *Client {
@@ -142,6 +143,91 @@ func New(config config.TemuBrowserConfig) *Client {
 		BgOrderService: bgOrderService{xService, client},
 		BgAuthService:  bgAuthService{xService, client},
 	}
+
+	sellerCentralClient := resty.New().
+		SetDebug(config.Debug).
+		EnableTrace().
+		SetBaseURL(config.SellerCentralBaseUrl).
+		SetHeaders(map[string]string{
+			"Content-Type": "application/json",
+			"Accept":       "application/json",
+			"User-Agent":   config.UserAgent,
+		}).
+		SetAllowGetMethodPayload(true).
+		SetTimeout(config.Timeout * time.Second).
+		SetTransport(&http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: !config.VerifySSL},
+			DialContext: (&net.Dialer{
+				Timeout: config.Timeout * time.Second,
+			}).DialContext,
+		}).
+		SetRedirectPolicy(resty.RedirectPolicyFunc(func(req *http.Request, via []*http.Request) error {
+			if req.Response.StatusCode == 302 {
+				return nil
+			}
+			return http.ErrUseLastResponse
+		})).
+		OnBeforeRequest(func(client *resty.Client, request *resty.Request) error {
+			values := make(map[string]any)
+			if request.Body != nil {
+				b, e := json.Marshal(request.Body)
+				if e != nil {
+					return e
+				}
+
+				e = json.Unmarshal(b, &values)
+				if e != nil {
+					return e
+				}
+			}
+			// 设置请求头中的Anti-Content
+			antiContent, err := utils.GetAntiContent()
+			if err != nil {
+				return err
+			}
+			request.SetHeader("Anti-Content", antiContent)
+			return nil
+		}).
+		SetRetryCount(3).
+		SetRetryWaitTime(time.Duration(500) * time.Millisecond).
+		SetRetryMaxWaitTime(time.Duration(1) * time.Second).
+		AddRetryCondition(func(response *resty.Response, err error) bool {
+			if response == nil {
+				return false
+			}
+
+			retry := response.StatusCode() == http.StatusTooManyRequests
+			if !retry {
+				r := struct {
+					Success   bool   `json:"success"`
+					ErrorCode int    `json:"errorCode"`
+					ErrorMsg  string `json:"errorMsg"`
+				}{}
+				retry = json.Unmarshal(response.Body(), &r) == nil &&
+					!r.Success &&
+					r.ErrorCode == 4000000 &&
+					strings.EqualFold(r.ErrorMsg, "SYSTEM_EXCEPTION")
+			}
+			if retry {
+				// 重新设置 Anti-Content
+				antiContent, err := utils.GetAntiContent()
+				if err != nil {
+					logger.Printf("重新获取 Anti-Content 失败: %v", err)
+					return false
+				}
+				response.Request.SetHeader("Anti-Content", antiContent)
+
+				logger.Printf("重试请求，URL: %s", response.Request.URL)
+			}
+			return retry
+		})
+	if config.Proxy != "" {
+		sellerCentralClient.SetProxy(config.Proxy)
+	}
+	sellerCentralClient.JSONMarshal = json.Marshal
+	sellerCentralClient.JSONUnmarshal = json.Unmarshal
+	xService.httpClient = sellerCentralClient
+	client.sellerCentralClient = sellerCentralClient
 
 	return client
 }

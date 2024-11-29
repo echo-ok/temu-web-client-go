@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/bestk/temu-helper/config"
+	"github.com/bestk/temu-helper/entity"
 	"github.com/bestk/temu-helper/utils"
 	"gopkg.in/guregu/null.v4"
 )
@@ -91,19 +92,24 @@ func TestLogin(t *testing.T) {
 
 	// 查询订单列表
 	params := BgOrderQueryParams{
-		QueryType:           null.NewInt(2, true),
+		QueryType:           null.NewInt(entity.RecentOrderStatusUnshipped, true),
 		FulfillmentMode:     null.NewInt(0, true),
 		SortType:            null.NewInt(1, true),
+		TimeZone:            null.NewString("UTC+8", true),
 		ParentAfterSalesTag: null.NewInt(0, true),
 		NeedBuySignService:  null.NewInt(0, true),
 		SellerNoteLabelList: []int{},
 		ParentOrderSnList:   []string{},
-		TimeZone:            null.NewString("UTC+8", true),
 	}
-	items, _, _, _, err := temuClient.Services.BgOrderService.Query(ctx, params)
+	items, total, _, _, err := temuClient.Services.BgOrderService.Query(ctx, params)
 	if err != nil {
 		t.Errorf("查询订单列表失败: %v", err)
 	}
-	t.Logf("查询订单列表成功，返回的订单数量: %d", len(items))
+	t.Logf("查询订单列表成功，返回的订单数量: %d", total)
+	for _, item := range items {
+		for _, order := range item.OrderList {
+			t.Logf("子订单信息: %+v", order.OrderSn)
+		}
+	}
 
 }

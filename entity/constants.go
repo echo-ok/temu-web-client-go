@@ -81,3 +81,13 @@ const (
 	ShipOrderStatusCanceled                = 5 // 已取消
 	ShipOrderStatusPartialReceive          = 6 // 部分收货
 )
+
+// 最近订单状态
+const (
+	RecentOrderStatusAll       = 0 // 全部
+	RecentOrderStatusPending   = 1 // 平台处理中
+	RecentOrderStatusUnshipped = 2 // 未发货
+	RecentOrderStatusShipped   = 4 // 已发货
+	RecentOrderStatusSigned    = 5 // 已签收
+	RecentOrderStatusCanceled  = 3 // 已取消
+)

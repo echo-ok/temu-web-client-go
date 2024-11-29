@@ -26,35 +26,41 @@ type BgOrderQueryParams struct {
 }
 
 // Query 查询订单列表
-func (s bgOrderService) Query(ctx context.Context, params BgOrderQueryParams) (items []entity.BgOrder, total, totalPages int, isLastPage bool, err error) {
+func (s bgOrderService) Query(ctx context.Context, params BgOrderQueryParams) (items []entity.RecentOrder, total, totalPages int, isLastPage bool, err error) {
 	params.TidyPager()
 
 	var result = struct {
 		normal.Response
 		Result struct {
-			Total int              `json:"total"`
-			List  []entity.BgOrder `json:"list"`
+			TotalItemNum int                  `json:"totalItemNum"`
+			PageItems    []entity.RecentOrder `json:"pageItems"`
 		} `json:"result"`
 	}{}
 
 	// 设置启用cookie
-	s.httpClient.SetCookieJar(s.httpClient.GetClient().Jar)
+	s.client.sellerCentralClient.SetCookieJar(s.client.sellerCentralClient.GetClient().Jar)
 
-	resp, err := s.httpClient.
-		SetBaseURL(s.client.SellerCentralBaseUrl).
-		R().
+	resp, err := s.client.sellerCentralClient.R().
+		SetResult(&result).
 		SetContext(ctx).
 		// TODO: 需要从配置中获取
 		SetHeader("mallid", "634418212175626").
 		SetBody(params).
-		SetResult(&result).
 		Post("/kirogi/bg/mms/recentOrderList")
 	if err = recheckError(resp, result.Response, err); err != nil {
 		return
 	}
 
-	items = result.Result.List
-	total, totalPages, isLastPage = parseResponseTotal(params.Page, params.PageSize, result.Result.Total)
-
-	return
+	items = result.Result.PageItems
+	total, totalPages, isLastPage = parseResponseTotal(params.Page, params.PageSize, result.Result.TotalItemNum)
+	if !isLastPage {
+		params.Page++
+		nextItems, nextTotal, _, _, err := s.Query(ctx, params) // 递归获取
+		if err != nil {
+			return items, total, totalPages, isLastPage, err
+		}
+		items = append(items, nextItems...)
+		total += nextTotal
+	}
+	return items, total, totalPages, isLastPage, err
 }
