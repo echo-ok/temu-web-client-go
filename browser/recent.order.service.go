@@ -14,7 +14,7 @@ type recentOrderService struct {
 	client *Client
 }
 
-type BgOrderQueryParams struct {
+type RecentOrderQueryParams struct {
 	normal.ParameterWithPager
 	FulfillmentMode     null.Int    `json:"fulfillmentMode"`
 	QueryType           null.Int    `json:"queryType"`
@@ -27,7 +27,7 @@ type BgOrderQueryParams struct {
 }
 
 // Query 查询订单列表
-func (s recentOrderService) Query(ctx context.Context, params BgOrderQueryParams) (items []entity.RecentOrder, total, totalPages int, isLastPage bool, err error) {
+func (s recentOrderService) Query(ctx context.Context, params RecentOrderQueryParams) (items []entity.RecentOrder, total, totalPages int, isLastPage bool, err error) {
 	params.TidyPager()
 
 	var result = struct {

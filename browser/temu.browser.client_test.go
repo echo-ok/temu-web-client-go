@@ -91,7 +91,7 @@ func TestLogin(t *testing.T) {
 	t.Logf("登录 Seller Central 成功: %v", success)
 
 	// 查询订单列表
-	params := BgOrderQueryParams{
+	params := RecentOrderQueryParams{
 		QueryType:           null.NewInt(entity.RecentOrderStatusUnshipped, true),
 		FulfillmentMode:     null.NewInt(0, true),
 		SortType:            null.NewInt(1, true),
