@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/bestk/temu-helper/config"
+	"github.com/bestk/temu-helper/entity"
 	"github.com/bestk/temu-helper/normal"
 	"github.com/bestk/temu-helper/utils"
 	"github.com/go-resty/resty/v2"
@@ -38,6 +39,7 @@ type Client struct {
 	BaseUrl              string
 	SellerCentralBaseUrl string
 	sellerCentralClient  *resty.Client // SellerCentral专用客户端
+	mallId               uint64
 }
 
 func New(config config.TemuBrowserConfig) *Client {
@@ -247,6 +249,9 @@ func recheckError(resp *resty.Response, result normal.Response, e error) (err er
 	}
 
 	if !result.Success {
+		if result.ErrorCode == entity.ErrorNeedSMSCode {
+			return normal.ErrNeedSMSCode
+		}
 		return errors.New(result.ErrorMessage)
 	}
 	return nil
@@ -259,4 +264,15 @@ func parseResponseTotal(currentPage, pageSize, total int) (n, totalPages int, is
 
 	totalPages = (total / pageSize) + 1
 	return total, totalPages, currentPage >= totalPages
+}
+
+func (c *Client) SetMallId(mallId uint64) {
+	c.mallId = mallId
+}
+
+func (c *Client) CheckMallId() error {
+	if c.mallId == 0 {
+		return errors.New("mall ID is not set")
+	}
+	return nil
 }

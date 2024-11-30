@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/bestk/temu-helper/entity"
 	"github.com/bestk/temu-helper/normal"
@@ -55,8 +56,12 @@ func (s stockService) QueryBtgProductStockInfo(ctx context.Context, params Query
 		} `json:"result"`
 	}{}
 
+	if err := s.client.CheckMallId(); err != nil {
+		return nil, err
+	}
+
 	resp, err := s.httpClient.R().
-		SetHeader("mallId", "634418212175626").
+		SetHeader("mallid", fmt.Sprintf("%d", s.client.mallId)).
 		SetResult(&result).
 		SetContext(ctx).
 		SetBody(params).

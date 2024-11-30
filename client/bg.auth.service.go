@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/bestk/temu-helper/entity"
 	"github.com/bestk/temu-helper/normal"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
@@ -18,6 +19,7 @@ type BgLoginRequestParams struct {
 	LoginName       string `json:"loginName" binding:"required"`
 	EncryptPassword string `json:"encryptPassword" binding:"required"`
 	KeyVersion      string `json:"keyVersion" default:"1" binding:"required"`
+	VerifyCode      *string `json:"verifyCode"`
 }
 
 type BgObtainCodeRequestParams struct {
@@ -28,6 +30,10 @@ type BgLoginByCodeRequestParams struct {
 	Code         string `json:"code" binding:"required"`
 	Confirm      bool   `json:"confirm" default:"false"`
 	TargetMallId uint64 `json:"targetMallId" binding:"required"`
+}
+
+type BgGetLoginVerifyCodeRequestParams struct {
+	Mobile string `json:"mobile" binding:"required"`
 }
 
 func (m BgLoginRequestParams) validate() error {
@@ -46,6 +52,12 @@ func (m BgObtainCodeRequestParams) validate() error {
 func (m BgLoginByCodeRequestParams) validate() error {
 	return validation.ValidateStruct(&m,
 		validation.Field(&m.Code, validation.Required.Error("验证码不能为空")),
+	)
+}
+
+func (m BgGetLoginVerifyCodeRequestParams) validate() error {
+	return validation.ValidateStruct(&m,
+		validation.Field(&m.Mobile, validation.Required.Error("手机号不能为空")),
 	)
 }
 
@@ -186,7 +198,55 @@ func (s *bgAuthService) LoginByCode(ctx context.Context, params BgLoginByCodeReq
 	return true, nil
 }
 
-// // 获取用户信息 api/seller/auth/userInfo
-// func (s *bgAuthService) GetUserInfo(ctx context.Context) (bool, error) {
+// 获取登录短信验证码 bg/quiet/api/mms/loginVerifyCode
+func (s *bgAuthService) GetLoginVerifyCode(ctx context.Context, params BgGetLoginVerifyCodeRequestParams) (bool, error) {
+	if err := params.validate(); err != nil {
+		return false, err
+	}
 
-// }
+	var result = struct {
+		normal.Response
+	}{}
+
+	resp, err := s.httpClient.R().
+		SetContext(ctx).
+		SetResult(&result).
+		SetBody(params).
+		Post("/bg/quiet/api/mms/loginVerifyCode")
+
+	if err != nil {
+		return false, err
+	}
+
+	err = recheckError(resp, result.Response, err)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+// // 获取用户信息 api/seller/auth/userInfo
+func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error) {
+	var result = struct {
+		normal.Response
+		Result entity.UserInfo `json:"result"`
+	}{}
+
+	resp, err := s.client.sellerCentralClient.R().
+		SetContext(ctx).
+		SetBody(map[string]interface{}{}).
+		SetResult(&result).
+		Post("/api/seller/auth/userInfo")
+
+	if err != nil {
+		return entity.UserInfo{}, err
+	}
+
+	err = recheckError(resp, result.Response, err)
+	if err != nil {
+		return entity.UserInfo{}, err
+	}
+
+	return result.Result, nil
+}

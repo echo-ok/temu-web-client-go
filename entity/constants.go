@@ -91,3 +91,8 @@ const (
 	RecentOrderStatusSigned    = 5 // 已签收
 	RecentOrderStatusCanceled  = 3 // 已取消
 )
+
+// 错误代码
+const (
+	ErrorNeedSMSCode = 40002002 // 需要短信验证码
+)

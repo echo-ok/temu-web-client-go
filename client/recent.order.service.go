@@ -3,6 +3,7 @@ package client
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/bestk/temu-helper/entity"
 	"github.com/bestk/temu-helper/normal"
@@ -38,18 +39,19 @@ func (s recentOrderService) Query(ctx context.Context, params RecentOrderQueryPa
 		} `json:"result"`
 	}{}
 
-	// 设置启用cookie
-	s.client.sellerCentralClient.SetCookieJar(s.client.sellerCentralClient.GetClient().Jar)
+	if err := s.client.CheckMallId(); err != nil {
+		return nil, 0, 0, false, err
+	}
 
 	resp, err := s.client.sellerCentralClient.R().
 		SetResult(&result).
 		SetContext(ctx).
-		// TODO: 需要从配置中获取
-		SetHeader("mallid", "634418212175626").
+		SetHeader("mallid", fmt.Sprintf("%d", s.client.mallId)).
 		SetBody(params).
 		Post("/kirogi/bg/mms/recentOrderList")
+
 	if err = recheckError(resp, result.Response, err); err != nil {
-		return
+		return nil, 0, 0, false, err
 	}
 
 	items = result.Result.PageItems
