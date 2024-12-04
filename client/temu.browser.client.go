@@ -283,7 +283,13 @@ func (c *Client) SetCookie(cookies []*http.Cookie) {
 }
 
 func (c *Client) GetCookie() []*http.Cookie {
-	return c.SellerCentralClient.GetClient().Jar.Cookies(&url.URL{
-		Host: strings.TrimPrefix(c.SellerCentralBaseUrl, "https://"),
-	})
+	// 输出所有cookie
+	url, err := url.Parse(c.SellerCentralBaseUrl)
+	if err != nil {
+		c.Logger.Printf("解析 SellerCentralBaseURL失败: %v", err)
+		return nil
+	}
+	cookies := c.SellerCentralClient.GetClient().Jar.Cookies(url)
+	c.Logger.Printf("cookies: %v", cookies)
+	return cookies
 }
