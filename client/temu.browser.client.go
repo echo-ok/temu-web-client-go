@@ -22,7 +22,7 @@ import (
 
 type service struct {
 	debug      bool          // Is debug mode
-	logger     *log.Logger   // Log
+	logger     resty.Logger  // Log
 	httpClient *resty.Client // HTTP client
 }
 
@@ -34,7 +34,7 @@ type services struct {
 
 type Client struct {
 	Debug                bool
-	Logger               *log.Logger
+	Logger               resty.Logger
 	Services             services
 	TimeLocation         *time.Location
 	BaseUrl              string
@@ -43,10 +43,24 @@ type Client struct {
 	MallId               uint64
 }
 
+// 添加自定义 Logger 结构体
+type customLogger struct {
+	*log.Logger
+}
+
+// 实现 resty.Logger 接口所需的方法
+func (l *customLogger) Errorf(format string, v ...interface{}) { l.Printf("ERROR "+format, v...) }
+func (l *customLogger) Warnf(format string, v ...interface{})  { l.Printf("WARN "+format, v...) }
+func (l *customLogger) Debugf(format string, v ...interface{}) { l.Printf("DEBUG "+format, v...) }
+
+func createLogger() *customLogger {
+	return &customLogger{log.New(os.Stdout, "[ Temu ] ", log.LstdFlags|log.Llongfile)}
+}
+
 func New(config config.TemuBrowserConfig) *Client {
 	logger := config.Logger
 	if logger == nil {
-		logger = log.New(os.Stdout, "[ Temu ] ", log.LstdFlags|log.Llongfile)
+		logger = createLogger()
 	}
 	client := &Client{
 		Debug:                config.Debug,
@@ -56,11 +70,12 @@ func New(config config.TemuBrowserConfig) *Client {
 	}
 	loc, err := time.LoadLocation("Asia/Shanghai")
 	if err != nil {
-		logger.Println("load location error:", err)
+		logger.Errorf("load location error: %v", err)
 	}
 	client.TimeLocation = loc
 
 	httpClient := resty.New().
+		SetLogger(logger).
 		SetDebug(config.Debug).
 		EnableTrace().
 		SetBaseURL(config.BaseUrl).
