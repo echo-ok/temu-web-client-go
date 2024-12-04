@@ -13,5 +13,6 @@ type TemuBrowserConfig struct {
 	VerifySSL            bool          `json:"verify_ssl"`                                                                                                                                 // 是否验证 SSL
 	UserAgent            string        `json:"user_agent" default:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"` // User Agent
 	Proxy                string        `json:"proxy"`                                                                                                                                      // 代理
-	Logger               *log.Logger   `json:"-"`                                                                                                                                          // 日志
+	Logger               *log.Logger   `json:"-"`    
+	                                                                                                                                      // 日志
 }
