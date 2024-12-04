@@ -5,11 +5,9 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 	"time"
 
@@ -43,25 +41,9 @@ type Client struct {
 	MallId               uint64
 }
 
-// 添加自定义 Logger 结构体
-type customLogger struct {
-	*log.Logger
-}
-
-// 实现 resty.Logger 接口所需的方法
-func (l *customLogger) Errorf(format string, v ...interface{}) { l.Printf("ERROR "+format, v...) }
-func (l *customLogger) Warnf(format string, v ...interface{})  { l.Printf("WARN "+format, v...) }
-func (l *customLogger) Debugf(format string, v ...interface{}) { l.Printf("DEBUG "+format, v...) }
-
-func createLogger() *customLogger {
-	return &customLogger{log.New(os.Stdout, "[ Temu ] ", log.LstdFlags|log.Llongfile)}
-}
-
 func New(config config.TemuBrowserConfig) *Client {
 	logger := config.Logger
-	if logger == nil {
-		logger = createLogger()
-	}
+
 	client := &Client{
 		Debug:                config.Debug,
 		Logger:               logger,
@@ -143,12 +125,12 @@ func New(config config.TemuBrowserConfig) *Client {
 				// 重新设置 Anti-Content
 				antiContent, err := utils.GetAntiContent()
 				if err != nil {
-					logger.Printf("重新获取 Anti-Content 失败: %v", err)
+					logger.Errorf("重新获取 Anti-Content 失败: %v", err)
 					return false
 				}
 				response.Request.SetHeader("Anti-Content", antiContent)
 
-				logger.Printf("重试请求，URL: %s", response.Request.URL)
+				logger.Debugf("重试请求，URL: %s", response.Request.URL)
 			}
 			return retry
 		})
@@ -236,12 +218,12 @@ func New(config config.TemuBrowserConfig) *Client {
 				// 重新设置 Anti-Content
 				antiContent, err := utils.GetAntiContent()
 				if err != nil {
-					logger.Printf("重新获取 Anti-Content 失败: %v", err)
+					logger.Errorf("重新获取 Anti-Content 失败: %v", err)
 					return false
 				}
 				response.Request.SetHeader("Anti-Content", antiContent)
 
-				logger.Printf("重试请求，URL: %s", response.Request.URL)
+				logger.Debugf("重试请求，URL: %s", response.Request.URL)
 			}
 			return retry
 		})
@@ -304,10 +286,10 @@ func (c *Client) GetCookie() []*http.Cookie {
 	// 输出所有cookie
 	url, err := url.Parse(c.SellerCentralBaseUrl)
 	if err != nil {
-		c.Logger.Printf("解析 SellerCentralBaseURL失败: %v", err)
+		c.Logger.Errorf("解析 SellerCentralBaseURL失败: %v", err)
 		return nil
 	}
 	cookies := c.SellerCentralClient.GetClient().Jar.Cookies(url)
-	c.Logger.Printf("cookies: %v", cookies)
+	c.Logger.Debugf("cookies: %v", cookies)
 	return cookies
 }
