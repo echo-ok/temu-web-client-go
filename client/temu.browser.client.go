@@ -38,8 +38,8 @@ type Client struct {
 	TimeLocation         *time.Location
 	BaseUrl              string
 	SellerCentralBaseUrl string
-	sellerCentralClient  *resty.Client // SellerCentral专用客户端
-	mallId               uint64
+	SellerCentralClient  *resty.Client // SellerCentral专用客户端
+	MallId               uint64
 }
 
 func New(config config.TemuBrowserConfig) *Client {
@@ -267,20 +267,20 @@ func parseResponseTotal(currentPage, pageSize, total int) (n, totalPages int, is
 }
 
 func (c *Client) SetMallId(mallId uint64) {
-	c.mallId = mallId
+	c.MallId = mallId
 }
 
 func (c *Client) CheckMallId() error {
-	if c.mallId == 0 {
+	if c.MallId == 0 {
 		return errors.New("mall ID is not set")
 	}
 	return nil
 }
 
 func (c *Client) SetCookie(cookies []*http.Cookie) {
-	c.sellerCentralClient.SetCookies(cookies)
+	c.SellerCentralClient.SetCookies(cookies)
 }
 
 func (c *Client) GetCookie() []*http.Cookie {
-	return c.sellerCentralClient.Cookies()
+	return c.SellerCentralClient.GetClient().Jar.Cookies(nil)
 }
