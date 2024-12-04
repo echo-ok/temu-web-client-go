@@ -8,6 +8,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -282,5 +283,7 @@ func (c *Client) SetCookie(cookies []*http.Cookie) {
 }
 
 func (c *Client) GetCookie() []*http.Cookie {
-	return c.SellerCentralClient.GetClient().Jar.Cookies(nil)
+	return c.SellerCentralClient.GetClient().Jar.Cookies(&url.URL{
+		Host: strings.TrimPrefix(c.SellerCentralBaseUrl, "https://"),
+	})
 }
