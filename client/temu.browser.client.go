@@ -151,6 +151,7 @@ func New(config config.TemuBrowserConfig) *Client {
 	}
 
 	sellerCentralClient := resty.New().
+		SetLogger(logger).
 		SetDebug(config.Debug).
 		EnableTrace().
 		SetBaseURL(config.SellerCentralBaseUrl).
