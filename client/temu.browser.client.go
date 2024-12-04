@@ -276,3 +276,11 @@ func (c *Client) CheckMallId() error {
 	}
 	return nil
 }
+
+func (c *Client) SetCookie(cookies []*http.Cookie) {
+	c.sellerCentralClient.SetCookies(cookies)
+}
+
+func (c *Client) GetCookie() []*http.Cookie {
+	return c.sellerCentralClient.Cookies()
+}
