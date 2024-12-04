@@ -44,7 +44,10 @@ type Client struct {
 }
 
 func New(config config.TemuBrowserConfig) *Client {
-	logger := log.New(os.Stdout, "[ Temu ] ", log.LstdFlags|log.Llongfile)
+	logger := config.Logger
+	if logger == nil {
+		logger = log.New(os.Stdout, "[ Temu ] ", log.LstdFlags|log.Llongfile)
+	}
 	client := &Client{
 		Debug:                config.Debug,
 		Logger:               logger,
