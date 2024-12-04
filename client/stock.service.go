@@ -61,7 +61,7 @@ func (s stockService) QueryBtgProductStockInfo(ctx context.Context, params Query
 	}
 
 	resp, err := s.httpClient.R().
-		SetHeader("mallid", fmt.Sprintf("%d", s.client.mallId)).
+		SetHeader("mallid", fmt.Sprintf("%d", s.client.MallId)).
 		SetResult(&result).
 		SetContext(ctx).
 		SetBody(params).

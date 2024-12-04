@@ -180,7 +180,7 @@ func (s *bgAuthService) LoginByCode(ctx context.Context, params BgLoginByCodeReq
 		} `json:"result"`
 	}{}
 
-	resp, err := s.client.sellerCentralClient.R().
+	resp, err := s.client.SellerCentralClient.R().
 		SetContext(ctx).
 		SetResult(&result).
 		SetBody(params).
@@ -233,7 +233,7 @@ func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error
 		Result entity.UserInfo `json:"result"`
 	}{}
 
-	resp, err := s.client.sellerCentralClient.R().
+	resp, err := s.client.SellerCentralClient.R().
 		SetContext(ctx).
 		SetBody(map[string]interface{}{}).
 		SetResult(&result).

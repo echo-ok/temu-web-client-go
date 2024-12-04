@@ -232,7 +232,7 @@ func New(config config.TemuBrowserConfig) *Client {
 	sellerCentralClient.JSONMarshal = json.Marshal
 	sellerCentralClient.JSONUnmarshal = json.Unmarshal
 	xService.httpClient = sellerCentralClient
-	client.sellerCentralClient = sellerCentralClient
+	client.SellerCentralClient = sellerCentralClient
 
 	return client
 }
