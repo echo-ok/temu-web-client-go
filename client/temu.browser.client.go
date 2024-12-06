@@ -301,3 +301,16 @@ func (c *Client) GetCookie() []*http.Cookie {
 	c.Logger.Debugf("cookies: %v", cookies)
 	return cookies
 }
+
+func (c *Client) Clone() *Client {
+	newClient := &Client{
+		SellerCentralBaseUrl: c.SellerCentralBaseUrl,
+		MallId:               c.MallId,
+		Logger:               c.Logger,
+	}
+
+	// 克隆 http client
+	newClient.SellerCentralClient = c.SellerCentralClient.Clone()
+	newClient.BgClient = c.BgClient.Clone()
+	return newClient
+}
