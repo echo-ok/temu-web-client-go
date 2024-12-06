@@ -38,6 +38,7 @@ type Client struct {
 	BaseUrl              string
 	SellerCentralBaseUrl string
 	SellerCentralClient  *resty.Client // SellerCentral专用客户端
+	BgClient             *resty.Client // BgAuth专用客户端
 	MallId               uint64
 }
 
@@ -149,6 +150,8 @@ func New(config config.TemuBrowserConfig) *Client {
 		BgAuthService:      bgAuthService{xService, client},
 		StockService:       stockService{xService, client},
 	}
+
+	client.BgClient = httpClient
 
 	sellerCentralClient := resty.New().
 		SetLogger(logger).
