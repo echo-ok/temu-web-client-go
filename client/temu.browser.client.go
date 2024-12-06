@@ -304,11 +304,31 @@ func (c *Client) GetCookie() []*http.Cookie {
 
 func (c *Client) Clone() *Client {
 	newClient := &Client{
-		Logger: c.Logger,
+		Debug:                c.Debug,
+		Logger:               c.Logger,
+		TimeLocation:         c.TimeLocation,
+		BaseUrl:              c.BaseUrl,
+		SellerCentralBaseUrl: c.SellerCentralBaseUrl,
+		MallId:               c.MallId,
 	}
 
 	// 克隆 http client
 	newClient.SellerCentralClient = c.SellerCentralClient.Clone()
 	newClient.BgClient = c.BgClient.Clone()
+
+	// 初始化服务
+	xService := service{
+		debug:      c.Debug,
+		logger:     c.Logger,
+		httpClient: newClient.BgClient,
+	}
+
+	// 重新初始化服务层
+	newClient.Services = services{
+		RecentOrderService: recentOrderService{xService, newClient},
+		BgAuthService:      bgAuthService{xService, newClient},
+		StockService:       stockService{xService, newClient},
+	}
+
 	return newClient
 }
