@@ -304,9 +304,7 @@ func (c *Client) GetCookie() []*http.Cookie {
 
 func (c *Client) Clone() *Client {
 	newClient := &Client{
-		SellerCentralBaseUrl: c.SellerCentralBaseUrl,
-		MallId:               c.MallId,
-		Logger:               c.Logger,
+		Logger: c.Logger,
 	}
 
 	// 克隆 http client
