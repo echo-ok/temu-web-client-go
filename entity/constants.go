@@ -96,3 +96,9 @@ const (
 const (
 	ErrorNeedSMSCode = 40002002 // 需要短信验证码
 )
+
+// 商品状态
+const (
+	ProductStatusOnSale  = 100 // 在售
+	ProductStatusOffSale = 200 // 下架
+)

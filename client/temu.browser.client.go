@@ -28,6 +28,7 @@ type services struct {
 	RecentOrderService recentOrderService
 	BgAuthService      bgAuthService
 	StockService       stockService
+	ProductService     productService
 }
 
 type Client struct {
@@ -149,6 +150,7 @@ func New(config config.TemuBrowserConfig) *Client {
 		RecentOrderService: recentOrderService{xService, client},
 		BgAuthService:      bgAuthService{xService, client},
 		StockService:       stockService{xService, client},
+		ProductService:     productService{xService, client},
 	}
 
 	client.BgClient = httpClient
@@ -328,6 +330,7 @@ func (c *Client) Clone() *Client {
 		RecentOrderService: recentOrderService{xService, newClient},
 		BgAuthService:      bgAuthService{xService, newClient},
 		StockService:       stockService{xService, newClient},
+		ProductService:     productService{xService, newClient},
 	}
 
 	return newClient
