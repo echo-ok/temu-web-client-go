@@ -1,27 +1,27 @@
 package entity
 
 type Product struct {
-	productId               int
-	productSkcId            int
-	productName             string
-	productType             int
-	sourceType              int
-	goodsId                 int
-	leafCat                 Category
-	categories              CategoryTree
-	productProperties       []ProductProperty
-	sizeTemplateIds         []int
-	productTotalSalesVolume int
-	extCode                 string
-	skcStatus               int
-	skcSiteStatus           int
-	mainImageUrl            string
-	last7DaysSalesVolume    *int
-	productSkuSummaries     []ProductSku
-	createdAt               int
-	productSelected         bool
-	hasDecoration           bool
-	supplierSourceType      int
+	ProductId               int               `json:"productId"`
+	ProductSkcId            int               `json:"productSkcId"`
+	ProductName             string            `json:"productName"`
+	ProductType             int               `json:"productType"`
+	SourceType              int               `json:"sourceType"`
+	GoodsId                 int               `json:"goodsId"`
+	LeafCat                 Category          `json:"leafCat"`
+	Categories              CategoryTree      `json:"categories"`
+	ProductProperties       []ProductProperty `json:"productProperties"`
+	SizeTemplateIds         []int             `json:"sizeTemplateIds"`
+	ProductTotalSalesVolume int               `json:"productTotalSalesVolume"`
+	ExtCode                 string            `json:"extCode"`
+	SkcStatus               int               `json:"skcStatus"`
+	SkcSiteStatus           int               `json:"skcSiteStatus"`
+	MainImageUrl            string            `json:"mainImageUrl"`
+	Last7DaysSalesVolume    *int              `json:"last7DaysSalesVolume"`
+	ProductSkuSummaries     []ProductSku      `json:"productSkuSummaries"`
+	CreatedAt               int               `json:"createdAt"`
+	ProductSelected         bool              `json:"productSelected"`
+	HasDecoration           bool              `json:"hasDecoration"`
+	SupplierSourceType      int               `json:"supplierSourceType"`
 }
 
 // 类目
