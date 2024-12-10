@@ -16,9 +16,9 @@ type bgAuthService struct {
 }
 
 type BgLoginRequestParams struct {
-	LoginName       string `json:"loginName" binding:"required"`
-	EncryptPassword string `json:"encryptPassword" binding:"required"`
-	KeyVersion      string `json:"keyVersion" default:"1" binding:"required"`
+	LoginName       string  `json:"loginName" binding:"required"`
+	EncryptPassword string  `json:"encryptPassword" binding:"required"`
+	KeyVersion      string  `json:"keyVersion" default:"1" binding:"required"`
 	VerifyCode      *string `json:"verifyCode"`
 }
 
@@ -249,4 +249,33 @@ func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error
 	}
 
 	return result.Result, nil
+}
+
+// 获取用户信息 https://seller.kuajingmaihuo.com/bg/quiet/api/mms/userInfo
+func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]entity.MallInfoByKuangjianmaihuo, error) {
+	var result = struct {
+		normal.Response
+		Result struct {
+			CompanyList []struct {
+				MalInfoList []entity.MallInfoByKuangjianmaihuo `json:"malInfoList"`
+			} `json:"companyList"`
+		} `json:"result"`
+	}{}
+
+	resp, err := s.httpClient.R().
+		SetContext(ctx).
+		SetResult(&result).
+		SetBody(map[string]interface{}{}).
+		Post("/bg/quiet/api/mms/userInfo")
+
+	if err != nil {
+		return []entity.MallInfoByKuangjianmaihuo{}, err
+	}
+
+	err = recheckError(resp, result.Response, err)
+	if err != nil {
+		return []entity.MallInfoByKuangjianmaihuo{}, err
+	}
+
+	return result.Result.CompanyList[0].MalInfoList, nil
 }
