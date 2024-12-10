@@ -15,7 +15,7 @@ type productService struct {
 }
 
 type ProductQueryParams struct {
-	normal.ParameterWithPager
+	normal.ParameterWithPage
 	SkcTopStatus null.Int `json:"skcTopStatus"`
 }
 
