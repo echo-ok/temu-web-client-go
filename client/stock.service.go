@@ -85,7 +85,10 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 
 	var result = struct {
 		normal.Response
-		Result bool `json:"result"`
+		Result struct {
+			SkuMaxQuantityDTOList []interface{} `json:"skuMaxQuantityDTOList"`
+			IsSuccess bool `json:"isSuccess"`
+		} `json:"result"`
 	}{}
 
 	resp, err := s.httpClient.R().
@@ -98,5 +101,5 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 		return false, err
 	}
 
-	return result.Success, nil
+	return result.Result.IsSuccess, nil
 }
