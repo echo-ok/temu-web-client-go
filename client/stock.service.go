@@ -7,6 +7,7 @@ import (
 	"github.com/bestk/temu-helper/entity"
 	"github.com/bestk/temu-helper/normal"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"gopkg.in/guregu/null.v4"
 )
 
 type stockService struct {
@@ -35,8 +36,8 @@ type SkuTypeChange struct {
 }
 
 type QueryBtgProductStockInfoRequestParams struct {
-	ProductId        *int64  `json:"productId,omitempty"`
-	ProductSkuIdList []int64 `json:"productSkuIdList"`
+	ProductId        null.Int   `json:"productId"`
+	ProductSkuIdList []int64    `json:"productSkuIdList"`
 }
 
 func (m UpdateMmsBtgProductSalesStockRequestParams) validate() error {
