@@ -1,27 +1,27 @@
 package entity
 
 type Product struct {
-	ProductId               int               `json:"productId"`
-	ProductSkcId            int               `json:"productSkcId"`
+	ProductId               int64             `json:"productId"`
+	ProductSkcId            int64             `json:"productSkcId"`
 	ProductName             string            `json:"productName"`
-	ProductType             int               `json:"productType"`
-	SourceType              int               `json:"sourceType"`
-	GoodsId                 int               `json:"goodsId"`
+	ProductType             int64             `json:"productType"`
+	SourceType              int64             `json:"sourceType"`
+	GoodsId                 int64             `json:"goodsId"`
 	LeafCat                 Category          `json:"leafCat"`
 	Categories              CategoryTree      `json:"categories"`
 	ProductProperties       []ProductProperty `json:"productProperties"`
-	SizeTemplateIds         []int             `json:"sizeTemplateIds"`
-	ProductTotalSalesVolume int               `json:"productTotalSalesVolume"`
+	SizeTemplateIds         []int64           `json:"sizeTemplateIds"`
+	ProductTotalSalesVolume int64             `json:"productTotalSalesVolume"`
 	ExtCode                 string            `json:"extCode"`
-	SkcStatus               int               `json:"skcStatus"`
-	SkcSiteStatus           int               `json:"skcSiteStatus"`
+	SkcStatus               int64             `json:"skcStatus"`
+	SkcSiteStatus           int64             `json:"skcSiteStatus"`
 	MainImageUrl            string            `json:"mainImageUrl"`
-	Last7DaysSalesVolume    *int              `json:"last7DaysSalesVolume"`
+	Last7DaysSalesVolume    *int64            `json:"last7DaysSalesVolume"`
 	ProductSkuSummaries     []ProductSku      `json:"productSkuSummaries"`
-	CreatedAt               int               `json:"createdAt"`
+	CreatedAt               int64             `json:"createdAt"`
 	ProductSelected         bool              `json:"productSelected"`
 	HasDecoration           bool              `json:"hasDecoration"`
-	SupplierSourceType      int               `json:"supplierSourceType"`
+	SupplierSourceType      int64             `json:"supplierSourceType"`
 }
 
 // 类目
