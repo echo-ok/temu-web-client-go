@@ -16,12 +16,13 @@ type productService struct {
 
 type ProductQueryParams struct {
 	normal.ParameterWithPage
-	SkcTopStatus         null.Int               `json:"skcTopStatus"`
-	SkuExtCodes          []string               `json:"skuExtCodes"`          // 货号
-	ProductIds           []int64                `json:"productIds"`           // 商品ID
-	ProductSkcIds        []int64                `json:"productSkcIds"`        // Skc
-	ProductName          string                 `json:"productName"`          // 商品名称
+	SkcTopStatus         null.Int             `json:"skcTopStatus"`
+	SkuExtCodes          []string             `json:"skuExtCodes"`          // 货号
+	ProductIds           []int64              `json:"productIds"`           // 商品ID
+	ProductSkcIds        []int64              `json:"productSkcIds"`        // Skc
+	ProductName          string               `json:"productName"`          // 商品名称
 	StockQuantitySection StockQuantitySection `json:"stockQuantitySection"` // 库存数量区间
+	SkcSiteStatus        null.Int             `json:"skcSiteStatus"`        // 在售状态 1:在售 0:下架
 }
 
 type StockQuantitySection struct {
