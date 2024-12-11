@@ -44,7 +44,6 @@ func (m UpdateMmsBtgProductSalesStockRequestParams) validate() error {
 	return validation.ValidateStruct(&m,
 		validation.Field(&m.ProductId, validation.Required.Error("商品ID不能为空")),
 		validation.Field(&m.SkuStockChangeList, validation.Required.Error("SKU库存变更列表不能为空")),
-		validation.Field(&m.SkuTypeChangeList, validation.Required.Error("SKU类型变更列表不能为空")),
 	)
 }
 
