@@ -1,7 +1,6 @@
 package entity
 
 type ProductStock struct {
-	ProductId          int64            `json:"productId"`
 	ProductSkuId       int64            `json:"productSkuId"`
 	StockType          *int64           `json:"stockType"`
 	WarehouseStockList []WarehouseStock `json:"warehouseStockList"`
