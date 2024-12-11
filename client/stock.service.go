@@ -35,7 +35,7 @@ type SkuTypeChange struct {
 }
 
 type QueryBtgProductStockInfoRequestParams struct {
-	ProductId        int64   `json:"productId"`
+	ProductId        *int64  `json:"productId,omitempty"`
 	ProductSkuIdList []int64 `json:"productSkuIdList"`
 }
 
