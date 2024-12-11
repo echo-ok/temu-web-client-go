@@ -79,12 +79,17 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 		return false, err
 	}
 
+	if err := s.client.CheckMallId(); err != nil {
+		return false, err
+	}
+
 	var result = struct {
 		normal.Response
 		Result bool `json:"result"`
 	}{}
 
 	resp, err := s.httpClient.R().
+		SetHeader("mallid", fmt.Sprintf("%d", s.client.MallId)).
 		SetResult(&result).
 		SetContext(ctx).
 		SetBody(params).
