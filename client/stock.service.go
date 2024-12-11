@@ -36,8 +36,8 @@ type SkuTypeChange struct {
 }
 
 type QueryBtgProductStockInfoRequestParams struct {
-	ProductId        null.Int   `json:"productId"`
-	ProductSkuIdList []int64    `json:"productSkuIdList"`
+	ProductId        null.Int `json:"productId,omitempty"`
+	ProductSkuIdList []int64  `json:"productSkuIdList"`
 }
 
 func (m UpdateMmsBtgProductSalesStockRequestParams) validate() error {
