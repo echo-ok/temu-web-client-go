@@ -2,6 +2,7 @@
 package client
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/json"
 	"errors"
@@ -351,4 +352,14 @@ func (c *Client) Clone() *Client {
 	}
 
 	return newClient
+}
+
+func (c *Client) IsBgSessionInvalid() bool {
+	_, err := c.Services.BgAuthService.GetUserInfo(context.Background())
+	return err != nil
+}
+
+func (c *Client) IsSellerCentralSessionInvalid() bool {
+	_, err := c.Services.BgAuthService.GetUserInfo(context.Background())
+	return err != nil
 }
