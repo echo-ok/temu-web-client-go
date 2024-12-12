@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
 	"net/url"
@@ -249,29 +250,26 @@ func recheckError(resp *resty.Response, result normal.Response, e error) (err er
 	}
 
 	if resp.IsError() {
-		errorMessage := strings.TrimSpace(result.ErrorMessage)
-
-		return errors.New(errorMessage)
-	}
-
-	if !result.Success {
-		if result.ErrorCode == entity.ErrorNeedSMSCode {
-			return normal.ErrNeedSMSCode
+		// 对于非2xx响应，手动解析错误信息
+		var errorResult normal.Response
+		if err := json.Unmarshal(resp.Body(), &errorResult); err != nil {
+			return fmt.Errorf("failed to parse error response: %v", err)
 		}
-		return errors.New(result.ErrorMessage)
-	}
-	return nil
-}
 
-func recheckErrorKuajingmaihuo(resp *resty.Response, result normal.ResponseKuajingmaihuo, e error) (err error) {
-	if e != nil {
-		return e
-	}
+		if errorResult.ErrorMessage != "" {
+			return errors.New(errorResult.ErrorMessage)
+		}
 
-	if resp.IsError() {
-		errorMessage := strings.TrimSpace(result.ErrorMessage)
+		var errorResult2 normal.Response2
+		if err := json.Unmarshal(resp.Body(), &errorResult2); err != nil {
+			return fmt.Errorf("failed to parse error response: %v", err)
+		}
 
-		return errors.New(errorMessage)
+		if errorResult2.ErrorMessage != "" {
+			return errors.New(errorResult2.ErrorMessage)
+		}
+
+		return errors.New("unknown error")
 	}
 
 	if !result.Success {

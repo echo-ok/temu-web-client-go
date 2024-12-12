@@ -11,7 +11,7 @@ type Response struct {
 	Result       any    `json:"result"`
 }
 
-type ResponseKuajingmaihuo struct {
+type Response2 struct {
 	Success      bool   `json:"success"`
 	ErrorCode    int    `json:"error_code"`
 	ErrorMessage string `json:"error_msg"`
