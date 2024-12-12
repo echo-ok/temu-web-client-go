@@ -53,7 +53,7 @@ func (s stockService) QueryBtgProductStockInfo(ctx context.Context, params Query
 		normal.ResponseKuajingmaihuo
 		Result struct {
 			ProductStockList []entity.ProductStock `json:"productStockList"`
-		} `json:"result"`
+		} `json:"result,omitempty"`
 	}{}
 
 	if err := s.client.CheckMallId(); err != nil {
@@ -88,7 +88,7 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 		Result struct {
 			SkuMaxQuantityDTOList []interface{} `json:"skuMaxQuantityDTOList"`
 			IsSuccess             bool          `json:"isSuccess"`
-		} `json:"result"`
+		} `json:"result,omitempty"`
 	}{}
 
 	resp, err := s.httpClient.R().
