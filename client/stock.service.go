@@ -16,28 +16,28 @@ type stockService struct {
 }
 
 type UpdateMmsBtgProductSalesStockRequestParams struct {
-	ProductId          int64            `json:"productId"`
+	ProductId          int              `json:"productId"`
 	SkuStockChangeList []SkuStockChange `json:"skuStockChangeList"`
 	SkuTypeChangeList  []SkuTypeChange  `json:"skuTypeChangeList,omitempty"`
 	IsCheckVersion     bool             `json:"isCheckVersion"`
 }
 
 type SkuStockChange struct {
-	ProductSkuId          int64  `json:"productSkuId"`
-	StockDiff             int64  `json:"stockDiff"`
-	CurrentStockAvailable int64  `json:"currentStockAvailable"`
-	CurrentShippingMode   int64  `json:"currentShippingMode"`
+	ProductSkuId          int    `json:"productSkuId"`
+	StockDiff             int    `json:"stockDiff"`
+	CurrentStockAvailable int    `json:"currentStockAvailable"`
+	CurrentShippingMode   int    `json:"currentShippingMode"`
 	WarehouseId           string `json:"warehouseId"`
 }
 
 type SkuTypeChange struct {
-	ProductSkuId   int64 `json:"productSkuId"`
-	ProductSkuType int64 `json:"productSkuType"`
+	ProductSkuId   int `json:"productSkuId"`
+	ProductSkuType int `json:"productSkuType"`
 }
 
 type QueryBtgProductStockInfoRequestParams struct {
 	ProductId        null.Int `json:"productId,omitempty"`
-	ProductSkuIdList []int64  `json:"productSkuIdList"`
+	ProductSkuIdList []int    `json:"productSkuIdList"`
 }
 
 func (m UpdateMmsBtgProductSalesStockRequestParams) validate() error {
@@ -87,7 +87,7 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 		normal.Response
 		Result struct {
 			SkuMaxQuantityDTOList []interface{} `json:"skuMaxQuantityDTOList"`
-			IsSuccess bool `json:"isSuccess"`
+			IsSuccess             bool          `json:"isSuccess"`
 		} `json:"result"`
 	}{}
 

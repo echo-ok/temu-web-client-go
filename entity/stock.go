@@ -1,17 +1,17 @@
 package entity
 
 type ProductStock struct {
-	ProductSkuId       int64            `json:"productSkuId"`
-	StockType          *int64           `json:"stockType"`
+	ProductSkuId       int              `json:"productSkuId"`
+	StockType          *int             `json:"stockType"`
 	WarehouseStockList []WarehouseStock `json:"warehouseStockList"`
-	ShippingMode       int64            `json:"shippingMode"`
+	ShippingMode       int              `json:"shippingMode"`
 	SupportSystemSync  *bool            `json:"supportSwitchToSystemSync"`
 }
 
 type WarehouseStock struct {
 	WarehouseInfo    WarehouseInfo `json:"warehouseInfo"`
 	WarehouseDisable bool          `json:"warehouseDisable"`
-	StockAvailable   int64         `json:"stockAvailable"`
+	StockAvailable   int           `json:"stockAvailable"`
 	SiteList         []Site        `json:"siteList"`
 }
 
@@ -23,5 +23,5 @@ type WarehouseInfo struct {
 
 type Site struct {
 	SiteName string `json:"siteName"`
-	SiteId   int64  `json:"siteId"`
+	SiteId   int    `json:"siteId"`
 }

@@ -29,7 +29,7 @@ type BgObtainCodeRequestParams struct {
 type BgLoginByCodeRequestParams struct {
 	Code         string `json:"code" binding:"required"`
 	Confirm      bool   `json:"confirm" default:"false"`
-	TargetMallId uint64 `json:"targetMallId" binding:"required"`
+	TargetMallId int    `json:"targetMallId" binding:"required"`
 }
 
 type BgGetLoginVerifyCodeRequestParams struct {
@@ -91,7 +91,7 @@ func (s *bgAuthService) GetPublicKey() (string, string, error) {
 	return result.Result.PublicKey, result.Result.Version, nil
 }
 
-func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) (uint64, error) {
+func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) (int, error) {
 	if err := params.validate(); err != nil {
 		return 0, err
 	}
@@ -101,7 +101,7 @@ func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) 
 		Result struct {
 			MaskMobile      string `json:"maskMobile"`
 			VerifyAuthToken string `json:"verifyAuthToken"`
-			AccountId       uint64 `json:"accountId"`
+			AccountId       int    `json:"accountId"`
 		} `json:"result"`
 	}{}
 

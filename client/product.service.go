@@ -18,16 +18,16 @@ type ProductQueryParams struct {
 	normal.ParameterWithPage
 	SkcTopStatus         null.Int             `json:"skcTopStatus"`
 	SkuExtCodes          []string             `json:"skuExtCodes"`          // 货号
-	ProductIds           []int64              `json:"productIds"`           // 商品ID
-	ProductSkcIds        []int64              `json:"productSkcIds"`        // Skc
+	ProductIds           []int                `json:"productIds"`           // 商品ID
+	ProductSkcIds        []int                `json:"productSkcIds"`        // Skc
 	ProductName          string               `json:"productName"`          // 商品名称
 	StockQuantitySection StockQuantitySection `json:"stockQuantitySection"` // 库存数量区间
 	SkcSiteStatus        null.Int             `json:"skcSiteStatus"`        // 在售状态 1:在售 0:下架
 }
 
 type StockQuantitySection struct {
-	LeftValue  int64 `json:"leftValue"`
-	RightValue int64 `json:"rightValue"`
+	LeftValue  int `json:"leftValue"`
+	RightValue int `json:"rightValue"`
 }
 
 func (s productService) Query(ctx context.Context, params ProductQueryParams) (items []entity.Product, total, totalPages int, isLastPage bool, err error) {

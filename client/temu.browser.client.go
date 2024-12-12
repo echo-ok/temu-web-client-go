@@ -40,7 +40,7 @@ type Client struct {
 	SellerCentralBaseUrl string
 	SellerCentralClient  *resty.Client // SellerCentral专用客户端
 	BgClient             *resty.Client // BgAuth专用客户端
-	MallId               uint64
+	MallId               int
 }
 
 func New(config config.TemuBrowserConfig) *Client {
@@ -273,7 +273,7 @@ func parseResponseTotal(currentPage, pageSize, total int) (n, totalPages int, is
 	return total, totalPages, currentPage >= totalPages
 }
 
-func (c *Client) SetMallId(mallId uint64) {
+func (c *Client) SetMallId(mallId int) {
 	c.MallId = mallId
 }
 

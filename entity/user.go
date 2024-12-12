@@ -1,13 +1,13 @@
 package entity
 
 type UserInfo struct {
-	AccountId  uint64     `json:"accountId"`
+	AccountId  int        `json:"accountId"`
 	MaskMobile *string    `json:"maskMobile"`
 	MallList   []MallInfo `json:"mallList"`
 }
 
 type MallInfo struct {
-	MallId      uint64 `json:"mallId"`
+	MallId      int    `json:"mallId"`
 	MallName    string `json:"mallName"`
 	ManagedType int    `json:"managedType"`
 }
@@ -16,7 +16,7 @@ type MallInfo struct {
 type MallInfoByKuangjianmaihuo struct {
 	IsSemiManagedMall bool   `json:"isSemiManagedMall"`
 	Logo              string `json:"logo"`
-	MallId            uint64 `json:"mallId"`
+	MallId            int    `json:"mallId"`
 	MallName          string `json:"mallName"`
 	MallStatus        int    `json:"mallStatus"`
 }

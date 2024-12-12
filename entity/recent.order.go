@@ -7,9 +7,9 @@ type RecentOrder struct {
 
 type RecentOrderItem struct {
 	OrderSn            string      `json:"orderSn"`
-	SkcId              int64       `json:"skcId"`
+	SkcId              int         `json:"skcId"`
 	OrderPackageStatus interface{} `json:"orderPackageStatus"`
-	GoodsId            int64       `json:"goodsId"`
+	GoodsId            int         `json:"goodsId"`
 	OrderLabel         []struct {
 		Name  string `json:"name"`
 		Value int    `json:"value"`
@@ -86,7 +86,7 @@ type ParentOrderInfo struct {
 	ParentOrderSn                string        `json:"parentOrderSn"`
 	ParentAfterSalesTag          interface{}   `json:"parentAfterSalesTag"`
 	HasUs2CaOrders               bool          `json:"hasUs2CaOrders"`
-	ExpectShipLatestTime         int64         `json:"expectShipLatestTime"`
+	ExpectShipLatestTime         int           `json:"expectShipLatestTime"`
 	StatusWarnInfo               int           `json:"statusWarnInfo"`
 	SellerNoteDTO                interface{}   `json:"sellerNoteDTO"`
 	ParentRiskWarningStatus      interface{}   `json:"parentRiskWarningStatus"`
