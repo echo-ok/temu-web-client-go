@@ -63,7 +63,7 @@ func (m BgGetLoginVerifyCodeRequestParams) validate() error {
 
 func (s *bgAuthService) GetPublicKey() (string, string, error) {
 	var result = struct {
-		normal.Response
+		normal.ResponseKuajingmaihuo
 		Result struct {
 			PublicKey string `json:"publicKey"`
 			Version   string `json:"version"`
@@ -83,7 +83,7 @@ func (s *bgAuthService) GetPublicKey() (string, string, error) {
 		return "", "", err
 	}
 
-	err = recheckError(resp, result.Response, err)
+	err = recheckErrorKuajingmaihuo(resp, result.ResponseKuajingmaihuo, err)
 	if err != nil {
 		return "", "", err
 	}
@@ -97,7 +97,7 @@ func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) 
 	}
 
 	var result = struct {
-		normal.Response
+		normal.ResponseKuajingmaihuo
 		Result struct {
 			MaskMobile      string `json:"maskMobile"`
 			VerifyAuthToken string `json:"verifyAuthToken"`
@@ -115,7 +115,7 @@ func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) 
 		return 0, err
 	}
 
-	err = recheckError(resp, result.Response, err)
+	err = recheckErrorKuajingmaihuo(resp, result.ResponseKuajingmaihuo, err)
 	if err != nil {
 		return 0, err
 	}
@@ -130,7 +130,7 @@ func (s *bgAuthService) ObtainCode(ctx context.Context, params BgObtainCodeReque
 	}
 
 	var result = struct {
-		normal.Response
+		normal.ResponseKuajingmaihuo
 		Result struct {
 			Code string `json:"code"`
 		} `json:"result"`
@@ -146,7 +146,7 @@ func (s *bgAuthService) ObtainCode(ctx context.Context, params BgObtainCodeReque
 		return "", err
 	}
 
-	err = recheckError(resp, result.Response, err)
+	err = recheckErrorKuajingmaihuo(resp, result.ResponseKuajingmaihuo, err)
 	if err != nil {
 		return "", err
 	}
@@ -205,7 +205,7 @@ func (s *bgAuthService) GetLoginVerifyCode(ctx context.Context, params BgGetLogi
 	}
 
 	var result = struct {
-		normal.Response
+		normal.ResponseKuajingmaihuo
 	}{}
 
 	resp, err := s.httpClient.R().
@@ -218,7 +218,7 @@ func (s *bgAuthService) GetLoginVerifyCode(ctx context.Context, params BgGetLogi
 		return false, err
 	}
 
-	err = recheckError(resp, result.Response, err)
+	err = recheckErrorKuajingmaihuo(resp, result.ResponseKuajingmaihuo, err)
 	if err != nil {
 		return false, err
 	}
@@ -254,7 +254,7 @@ func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error
 // 获取用户信息 https://seller.kuajingmaihuo.com/bg/quiet/api/mms/userInfo
 func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]entity.MallInfoByKuangjianmaihuo, error) {
 	var result = struct {
-		normal.Response
+		normal.ResponseKuajingmaihuo
 		Result struct {
 			CompanyList []struct {
 				MalInfoList []entity.MallInfoByKuangjianmaihuo `json:"malInfoList"`
@@ -272,7 +272,7 @@ func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]ent
 		return []entity.MallInfoByKuangjianmaihuo{}, err
 	}
 
-	err = recheckError(resp, result.Response, err)
+	err = recheckErrorKuajingmaihuo(resp, result.ResponseKuajingmaihuo, err)
 	if err != nil {
 		return []entity.MallInfoByKuangjianmaihuo{}, err
 	}

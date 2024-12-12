@@ -50,7 +50,7 @@ func (m UpdateMmsBtgProductSalesStockRequestParams) validate() error {
 // 查询SKU库存信息 /marvel-mms/cn/api/kiana/starlaod/btg/sales/stock/queryBtgProductStockInfo
 func (s stockService) QueryBtgProductStockInfo(ctx context.Context, params QueryBtgProductStockInfoRequestParams) ([]entity.ProductStock, error) {
 	var result = struct {
-		normal.Response
+		normal.ResponseKuajingmaihuo
 		Result struct {
 			ProductStockList []entity.ProductStock `json:"productStockList"`
 		} `json:"result"`
@@ -66,7 +66,7 @@ func (s stockService) QueryBtgProductStockInfo(ctx context.Context, params Query
 		SetContext(ctx).
 		SetBody(params).
 		Post("/marvel-mms/cn/api/kiana/starlaod/btg/sales/stock/queryBtgProductStockInfo")
-	if err = recheckError(resp, result.Response, err); err != nil {
+	if err = recheckErrorKuajingmaihuo(resp, result.ResponseKuajingmaihuo, err); err != nil {
 		return nil, err
 	}
 
@@ -84,7 +84,7 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 	}
 
 	var result = struct {
-		normal.Response
+		normal.ResponseKuajingmaihuo
 		Result struct {
 			SkuMaxQuantityDTOList []interface{} `json:"skuMaxQuantityDTOList"`
 			IsSuccess             bool          `json:"isSuccess"`
@@ -97,7 +97,7 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 		SetContext(ctx).
 		SetBody(params).
 		Post("/marvel-mms/cn/api/kiana/starlaod/btg/sales/stock/updateMmsBtgProductSalesStock")
-	if err = recheckError(resp, result.Response, err); err != nil {
+	if err = recheckErrorKuajingmaihuo(resp, result.ResponseKuajingmaihuo, err); err != nil {
 		return false, err
 	}
 

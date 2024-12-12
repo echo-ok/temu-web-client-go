@@ -243,8 +243,27 @@ func New(config config.TemuBrowserConfig) *Client {
 
 	return client
 }
-
 func recheckError(resp *resty.Response, result normal.Response, e error) (err error) {
+	if e != nil {
+		return e
+	}
+
+	if resp.IsError() {
+		errorMessage := strings.TrimSpace(result.ErrorMessage)
+
+		return errors.New(errorMessage)
+	}
+
+	if !result.Success {
+		if result.ErrorCode == entity.ErrorNeedSMSCode {
+			return normal.ErrNeedSMSCode
+		}
+		return errors.New(result.ErrorMessage)
+	}
+	return nil
+}
+
+func recheckErrorKuajingmaihuo(resp *resty.Response, result normal.ResponseKuajingmaihuo, e error) (err error) {
 	if e != nil {
 		return e
 	}
