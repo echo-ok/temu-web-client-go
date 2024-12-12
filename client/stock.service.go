@@ -50,8 +50,8 @@ func (m UpdateMmsBtgProductSalesStockRequestParams) validate() error {
 // 查询SKU库存信息 /marvel-mms/cn/api/kiana/starlaod/btg/sales/stock/queryBtgProductStockInfo
 func (s stockService) QueryBtgProductStockInfo(ctx context.Context, params QueryBtgProductStockInfoRequestParams) ([]entity.ProductStock, error) {
 	var result = struct {
-		normal.ResponseKuajingmaihuo
-		Result struct {
+		normal.ResponseKuajingmaihuo `json:",inline"`
+		Result                       struct {
 			ProductStockList []entity.ProductStock `json:"productStockList"`
 		} `json:"result,omitempty"`
 	}{}
@@ -84,8 +84,8 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 	}
 
 	var result = struct {
-		normal.ResponseKuajingmaihuo
-		Result struct {
+		normal.ResponseKuajingmaihuo `json:",inline"`
+		Result                       struct {
 			SkuMaxQuantityDTOList []interface{} `json:"skuMaxQuantityDTOList"`
 			IsSuccess             bool          `json:"isSuccess"`
 		} `json:"result,omitempty"`

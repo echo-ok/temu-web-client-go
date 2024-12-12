@@ -63,8 +63,8 @@ func (m BgGetLoginVerifyCodeRequestParams) validate() error {
 
 func (s *bgAuthService) GetPublicKey() (string, string, error) {
 	var result = struct {
-		normal.ResponseKuajingmaihuo
-		Result struct {
+		normal.ResponseKuajingmaihuo `json:",inline"`
+		Result                       struct {
 			PublicKey string `json:"publicKey"`
 			Version   string `json:"version"`
 		} `json:"result"`
@@ -97,8 +97,8 @@ func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) 
 	}
 
 	var result = struct {
-		normal.ResponseKuajingmaihuo
-		Result struct {
+		normal.ResponseKuajingmaihuo `json:",inline"`
+		Result                       struct {
 			MaskMobile      string `json:"maskMobile"`
 			VerifyAuthToken string `json:"verifyAuthToken"`
 			AccountId       int    `json:"accountId"`
@@ -130,8 +130,8 @@ func (s *bgAuthService) ObtainCode(ctx context.Context, params BgObtainCodeReque
 	}
 
 	var result = struct {
-		normal.ResponseKuajingmaihuo
-		Result struct {
+		normal.ResponseKuajingmaihuo `json:",inline"`
+		Result                       struct {
 			Code string `json:"code"`
 		} `json:"result"`
 	}{}
@@ -205,7 +205,7 @@ func (s *bgAuthService) GetLoginVerifyCode(ctx context.Context, params BgGetLogi
 	}
 
 	var result = struct {
-		normal.ResponseKuajingmaihuo
+		normal.ResponseKuajingmaihuo `json:",inline"`
 	}{}
 
 	resp, err := s.httpClient.R().
@@ -254,8 +254,8 @@ func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error
 // 获取用户信息 https://seller.kuajingmaihuo.com/bg/quiet/api/mms/userInfo
 func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]entity.MallInfoByKuangjianmaihuo, error) {
 	var result = struct {
-		normal.ResponseKuajingmaihuo
-		Result struct {
+		normal.ResponseKuajingmaihuo `json:",inline"`
+		Result                       struct {
 			CompanyList []struct {
 				MalInfoList []entity.MallInfoByKuangjianmaihuo `json:"malInfoList"`
 			} `json:"companyList"`
