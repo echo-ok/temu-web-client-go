@@ -60,12 +60,12 @@ type ParentOrderInfo struct {
 	RegionName1                   string      `json:"regionName1"`
 	AfterSalesOrderType           int         `json:"afterSalesOrderType"`
 	CancelType                    interface{} `json:"cancelType"`
-	ParentShippingTimeStr         interface{} `json:"parentShippingTimeStr"`
+	ParentShippingTimeStr         string      `json:"parentShippingTimeStr"`
 	AddressAbormalAppealInfo      interface{} `json:"addressAbormalAppealInfo"`
 	SiteName                      string      `json:"siteName"`
 	NeedsSignatureServiceReminder bool        `json:"needsSignatureServiceReminder"`
 	RegionId1                     int         `json:"regionId1"`
-	ParentReceiptTimeStr          interface{} `json:"parentReceiptTimeStr"`
+	ParentReceiptTimeStr          string      `json:"parentReceiptTimeStr"`
 	AddressSnapshotInfo           struct {
 		AddressSnapshotId     string      `json:"addressSnapshotId"`
 		LogisticsAbnormalType interface{} `json:"logisticsAbnormalType"`
