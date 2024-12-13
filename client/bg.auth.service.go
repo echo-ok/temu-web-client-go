@@ -4,6 +4,7 @@ package client
 import (
 	"context"
 	"encoding/json"
+	"net/http"
 
 	"github.com/bestk/temu-helper/entity"
 	"github.com/bestk/temu-helper/normal"
@@ -91,9 +92,10 @@ func (s *bgAuthService) GetPublicKey() (string, string, error) {
 	return result.Result.PublicKey, result.Result.Version, nil
 }
 
-func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) (int, error) {
+// https://seller.kuajingmaihuo.com/bg/quiet/api/mms/login
+func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) (int, []*http.Cookie, error) {
 	if err := params.validate(); err != nil {
-		return 0, err
+		return 0, nil, err
 	}
 
 	var result = struct {
@@ -112,15 +114,15 @@ func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) 
 		Post("/bg/quiet/api/mms/login")
 
 	if err != nil {
-		return 0, err
+		return 0, nil, err
 	}
 
 	err = recheckError(resp, result.Response, err)
 	if err != nil {
-		return 0, err
+		return 0, nil, err
 	}
 
-	return result.Result.AccountId, nil
+	return result.Result.AccountId, resp.Cookies(), nil
 }
 
 // ObtainCode 获取验证码 bg/quiet/api/auth/obtainCode
