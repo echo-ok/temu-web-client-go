@@ -51,6 +51,7 @@ func (s recentOrderService) Query(ctx context.Context, params RecentOrderQueryPa
 		Post("/kirogi/bg/mms/recentOrderList")
 
 	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("查询最近订单列表失败: %v %+v", err, string(resp.Body()))
 		return nil, 0, 0, false, err
 	}
 

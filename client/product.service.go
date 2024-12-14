@@ -53,6 +53,7 @@ func (s productService) Query(ctx context.Context, params ProductQueryParams) (i
 		Post("/bg-visage-mms/product/skc/pageQuery")
 
 	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("查询商品列表失败: %v %+v", err, string(resp.Body()))
 		return nil, 0, 0, false, err
 	}
 

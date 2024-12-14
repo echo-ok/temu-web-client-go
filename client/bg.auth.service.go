@@ -84,8 +84,8 @@ func (s *bgAuthService) GetPublicKey() (string, string, error) {
 		return "", "", err
 	}
 
-	err = recheckError(resp, result.Response, err)
-	if err != nil {
+	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("获取公钥失败: %v %+v", err, string(resp.Body()))
 		return "", "", err
 	}
 
@@ -113,12 +113,8 @@ func (s *bgAuthService) Login(ctx context.Context, params BgLoginRequestParams) 
 		SetBody(params).
 		Post("/bg/quiet/api/mms/login")
 
-	if err != nil {
-		return 0, nil, err
-	}
-
-	err = recheckError(resp, result.Response, err)
-	if err != nil {
+	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("登录失败: %v %+v", err, string(resp.Body()))
 		return 0, nil, err
 	}
 
@@ -144,12 +140,8 @@ func (s *bgAuthService) ObtainCode(ctx context.Context, params BgObtainCodeReque
 		SetBody(params).
 		Post("/bg/quiet/api/auth/obtainCode")
 
-	if err != nil {
-		return "", err
-	}
-
-	err = recheckError(resp, result.Response, err)
-	if err != nil {
+	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("获取验证码失败: %v %+v", err, string(resp.Body()))
 		return "", err
 	}
 
@@ -163,6 +155,7 @@ func (s *bgAuthService) LoginSellerCentral(ctx context.Context, url string) (str
 		SetDoNotParseResponse(true).
 		Get(url)
 	if err != nil {
+		s.client.Logger.Errorf("登录 Seller Central 失败: %v %+v", err, string(resp.Body()))
 		return "", err
 	}
 	defer resp.RawResponse.Body.Close()
@@ -188,12 +181,8 @@ func (s *bgAuthService) LoginByCode(ctx context.Context, params BgLoginByCodeReq
 		SetBody(params).
 		Post("/api/seller/auth/loginByCode")
 
-	if err != nil {
-		return false, err
-	}
-
-	err = recheckError(resp, result.Response, err)
-	if err != nil {
+	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("登录 Seller Central 失败: %v %+v", err, string(resp.Body()))
 		return false, err
 	}
 
@@ -220,8 +209,8 @@ func (s *bgAuthService) GetLoginVerifyCode(ctx context.Context, params BgGetLogi
 		return false, err
 	}
 
-	err = recheckError(resp, result.Response, err)
-	if err != nil {
+	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("获取登录短信验证码失败: %v %+v", err, string(resp.Body()))
 		return false, err
 	}
 
@@ -245,8 +234,8 @@ func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error
 		return entity.UserInfo{}, err
 	}
 
-	err = recheckError(resp, result.Response, err)
-	if err != nil {
+	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("获取用户信息失败: %v %+v", err, string(resp.Body()))
 		return entity.UserInfo{}, err
 	}
 
@@ -274,8 +263,8 @@ func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]ent
 		return []entity.MallInfoByKuangjianmaihuo{}, err
 	}
 
-	err = recheckError(resp, result.Response, err)
-	if err != nil {
+	if err = recheckError(resp, result.Response, err); err != nil {
+		s.client.Logger.Errorf("获取用户信息失败: %v %+v", err, string(resp.Body()))
 		return []entity.MallInfoByKuangjianmaihuo{}, err
 	}
 
