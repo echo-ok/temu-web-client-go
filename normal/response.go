@@ -2,7 +2,8 @@ package normal
 
 import "errors"
 
-var ErrNeedSMSCode = errors.New("sms code required")
+var ErrNeedSMSCode = errors.New("需要短信验证码")
+var ErrNeedVerifyCode = errors.New("需要图形验证码")
 
 type Response struct {
 	Success      bool   `json:"success"`
