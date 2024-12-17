@@ -253,7 +253,7 @@ func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]ent
 		} `json:"result"`
 	}{}
 
-	resp, err := s.httpClient.R().
+	resp, err := s.client.BgClient.R().
 		SetContext(ctx).
 		SetResult(&result).
 		SetBody(map[string]interface{}{}).

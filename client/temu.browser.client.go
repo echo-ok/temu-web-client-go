@@ -327,6 +327,25 @@ func (c *Client) GetCookie() []*http.Cookie {
 	return cookies
 }
 
+func (c *Client) SetAccountCookie(cookies []*http.Cookie, clearOld bool) {
+	if clearOld {
+		c.BgClient.Cookies = []*http.Cookie{}
+	}
+
+	c.BgClient.SetCookies(cookies)
+}
+
+func (c *Client) GetAccountCookie() []*http.Cookie {
+	url, err := url.Parse(c.BaseUrl)
+	if err != nil {
+		c.Logger.Errorf("解析 BaseURL失败: %v", err)
+		return nil
+	}
+	cookies := c.BgClient.GetClient().Jar.Cookies(url)
+	c.Logger.Debugf("cookies: %v", cookies)
+	return cookies
+}
+
 func (c *Client) Clone() *Client {
 	newClient := &Client{
 		Debug:                c.Debug,
