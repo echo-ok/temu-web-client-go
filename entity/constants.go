@@ -94,7 +94,8 @@ const (
 
 // 错误代码
 const (
-	ErrorNeedSMSCode = 40002002 // 需要短信验证码
+	ErrorNeedSMSCode    = 40002002 // 需要短信验证码
+	ErrorNeedVerifyCode = 54001    // 需要图形验证码
 )
 
 // 商品状态

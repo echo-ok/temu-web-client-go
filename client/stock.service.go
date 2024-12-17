@@ -67,6 +67,7 @@ func (s stockService) QueryBtgProductStockInfo(ctx context.Context, params Query
 		SetBody(params).
 		Post("/marvel-mms/cn/api/kiana/starlaod/btg/sales/stock/queryBtgProductStockInfo")
 	if err = recheckError(resp, result.Response, err); err != nil {
+		s.logger.Errorf("查询SKU库存信息失败: %v %+v", err, string(resp.Body()))
 		return nil, err
 	}
 
@@ -98,6 +99,7 @@ func (s stockService) UpdateMmsBtgProductSalesStock(ctx context.Context, params 
 		SetBody(params).
 		Post("/marvel-mms/cn/api/kiana/starlaod/btg/sales/stock/updateMmsBtgProductSalesStock")
 	if err = recheckError(resp, result.Response, err); err != nil {
+		s.logger.Errorf("更新库存失败: %v %+v", err, string(resp.Body()))
 		return false, err
 	}
 

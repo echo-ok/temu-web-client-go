@@ -277,6 +277,11 @@ func recheckError(resp *resty.Response, result normal.Response, e error) (err er
 		if result.ErrorCode == entity.ErrorNeedSMSCode {
 			return normal.ErrNeedSMSCode
 		}
+
+		if result.ErrorCode == entity.ErrorNeedVerifyCode {
+			return normal.ErrNeedVerifyCode
+		}
+
 		return errors.New(result.ErrorMessage)
 	}
 	return nil
