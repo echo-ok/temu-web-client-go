@@ -362,12 +362,12 @@ func (c *Client) Clone() *Client {
 	return newClient
 }
 
-func (c *Client) IsBgSessionInvalid() bool {
+func (c *Client) IsAccountSessionInvalid() bool {
 	_, err := c.Services.BgAuthService.GetAccountUserInfo(context.Background())
 	return err != nil
 }
 
 func (c *Client) IsSellerCentralSessionInvalid() bool {
-	_, err := c.Services.BgAuthService.GetUserInfo(context.Background())
+	_, err := c.Services.BgAuthService.GetSellerCentralUserInfo(context.Background())
 	return err != nil
 }
