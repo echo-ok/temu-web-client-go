@@ -316,15 +316,7 @@ func (c *Client) SetCookie(cookies []*http.Cookie, clearOld bool) {
 }
 
 func (c *Client) GetCookie() []*http.Cookie {
-	// 输出所有cookie
-	url, err := url.Parse(c.SellerCentralBaseUrl)
-	if err != nil {
-		c.Logger.Errorf("解析 SellerCentralBaseURL失败: %v", err)
-		return nil
-	}
-	cookies := c.SellerCentralClient.GetClient().Jar.Cookies(url)
-	c.Logger.Debugf("cookies: %v", cookies)
-	return cookies
+	return c.SellerCentralClient.Cookies
 }
 
 func (c *Client) SetAccountCookie(cookies []*http.Cookie, clearOld bool) {
@@ -336,14 +328,7 @@ func (c *Client) SetAccountCookie(cookies []*http.Cookie, clearOld bool) {
 }
 
 func (c *Client) GetAccountCookie() []*http.Cookie {
-	url, err := url.Parse(c.BaseUrl)
-	if err != nil {
-		c.Logger.Errorf("解析 BaseURL失败: %v", err)
-		return nil
-	}
-	cookies := c.BgClient.GetClient().Jar.Cookies(url)
-	c.Logger.Debugf("cookies: %v", cookies)
-	return cookies
+	return c.BgClient.Cookies
 }
 
 func (c *Client) Clone() *Client {
