@@ -355,7 +355,7 @@ func (c *Client) Clone() *Client {
 }
 
 func (c *Client) IsBgSessionInvalid() bool {
-	_, err := c.Services.BgAuthService.GetUserInfo(context.Background())
+	_, err := c.Services.BgAuthService.GetMallInfoByKuangjianmaihuo(context.Background())
 	return err != nil
 }
 
