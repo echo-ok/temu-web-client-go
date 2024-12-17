@@ -4,6 +4,7 @@ package client
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/bestk/temu-helper/entity"
@@ -148,14 +149,14 @@ func (s *bgAuthService) ObtainCode(ctx context.Context, params BgObtainCodeReque
 	return result.Result.Code, nil
 }
 
-// LoginSellerCentral 登录 Seller Central
-func (s *bgAuthService) LoginSellerCentral(ctx context.Context, url string) (string, error) {
+// LoginTemuAccount 登录 Temu 账号
+func (s *bgAuthService) LoginTemuAccount(ctx context.Context, url string) (string, error) {
 	resp, err := s.httpClient.R().
 		SetContext(ctx).
 		SetDoNotParseResponse(true).
 		Get(url)
 	if err != nil {
-		s.client.Logger.Errorf("登录 Seller Central 失败: %v %+v", err, string(resp.Body()))
+		s.client.Logger.Errorf("登录 Temu 账号失败: %v %+v", err, string(resp.Body()))
 		return "", err
 	}
 	defer resp.RawResponse.Body.Close()
@@ -163,7 +164,7 @@ func (s *bgAuthService) LoginSellerCentral(ctx context.Context, url string) (str
 }
 
 // api/seller/auth/loginByCode
-func (s *bgAuthService) LoginByCode(ctx context.Context, params BgLoginByCodeRequestParams) (bool, error) {
+func (s *bgAuthService) LoginSellerCentralByCode(ctx context.Context, params BgLoginByCodeRequestParams) (bool, error) {
 	if err := params.validate(); err != nil {
 		return false, err
 	}
@@ -218,14 +219,19 @@ func (s *bgAuthService) GetLoginVerifyCode(ctx context.Context, params BgGetLogi
 }
 
 // // 获取用户信息 api/seller/auth/userInfo
-func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error) {
+func (s *bgAuthService) GetSellerCentralUserInfo(ctx context.Context) (entity.UserInfo, error) {
 	var result = struct {
 		normal.Response
 		Result entity.UserInfo `json:"result"`
 	}{}
 
+	if err := s.client.CheckMallId(); err != nil {
+		return entity.UserInfo{}, err
+	}
+
 	resp, err := s.client.SellerCentralClient.R().
 		SetContext(ctx).
+		SetHeader("mallid", fmt.Sprintf("%d", s.client.MallId)).
 		SetBody(map[string]interface{}{}).
 		SetResult(&result).
 		Post("/api/seller/auth/userInfo")
@@ -243,12 +249,12 @@ func (s *bgAuthService) GetUserInfo(ctx context.Context) (entity.UserInfo, error
 }
 
 // 获取用户信息 https://seller.kuajingmaihuo.com/bg/quiet/api/mms/userInfo
-func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]entity.MallInfoByKuangjianmaihuo, error) {
+func (s *bgAuthService) GetAccountUserInfo(ctx context.Context) ([]entity.AccountMallInfo, error) {
 	var result = struct {
 		normal.Response `json:",inline"`
 		Result          struct {
 			CompanyList []struct {
-				MalInfoList []entity.MallInfoByKuangjianmaihuo `json:"malInfoList"`
+				MalInfoList []entity.AccountMallInfo `json:"malInfoList"`
 			} `json:"companyList"`
 		} `json:"result"`
 	}{}
@@ -260,12 +266,12 @@ func (s *bgAuthService) GetMallInfoByKuangjianmaihuo(ctx context.Context) ([]ent
 		Post("/bg/quiet/api/mms/userInfo")
 
 	if err != nil {
-		return []entity.MallInfoByKuangjianmaihuo{}, err
+		return []entity.AccountMallInfo{}, err
 	}
 
 	if err = recheckError(resp, result.Response, err); err != nil {
 		s.client.Logger.Errorf("获取用户信息失败: %v %+v", err, string(resp.Body()))
-		return []entity.MallInfoByKuangjianmaihuo{}, err
+		return []entity.AccountMallInfo{}, err
 	}
 
 	return result.Result.CompanyList[0].MalInfoList, nil

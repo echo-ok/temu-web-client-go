@@ -13,7 +13,7 @@ type MallInfo struct {
 }
 
 // 主页接口卖家中心返回的mall信息
-type MallInfoByKuangjianmaihuo struct {
+type AccountMallInfo struct {
 	IsSemiManagedMall bool   `json:"isSemiManagedMall"`
 	Logo              string `json:"logo"`
 	MallId            int    `json:"mallId"`
