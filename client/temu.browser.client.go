@@ -306,7 +306,7 @@ func (c *Client) CheckMallId() error {
 	return nil
 }
 
-func (c *Client) SetCookie(cookies []*http.Cookie, clearOld bool) {
+func (c *Client) SetSellerCentralCookie(cookies []*http.Cookie, clearOld bool) {
 	if clearOld {
 		c.SellerCentralClient.Cookies = []*http.Cookie{}
 	}
@@ -314,7 +314,7 @@ func (c *Client) SetCookie(cookies []*http.Cookie, clearOld bool) {
 	c.SellerCentralClient.SetCookies(cookies)
 }
 
-func (c *Client) GetCookie() []*http.Cookie {
+func (c *Client) GetSellerCentralCookie() []*http.Cookie {
 	return c.SellerCentralClient.Cookies
 }
 

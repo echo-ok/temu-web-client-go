@@ -150,23 +150,23 @@ func (s *bgAuthService) ObtainCode(ctx context.Context, params BgObtainCodeReque
 }
 
 // LoginTemuAccount 登录 Temu 账号
-func (s *bgAuthService) LoginTemuAccount(ctx context.Context, url string) (string, error) {
+func (s *bgAuthService) LoginTemuAccount(ctx context.Context, url string) (string, []*http.Cookie, error) {
 	resp, err := s.httpClient.R().
 		SetContext(ctx).
 		SetDoNotParseResponse(true).
 		Get(url)
 	if err != nil {
 		s.client.Logger.Errorf("登录 Temu 账号失败: %v %+v", err, string(resp.Body()))
-		return "", err
+		return "", nil, err
 	}
 	defer resp.RawResponse.Body.Close()
-	return resp.String(), nil
+	return resp.String(), resp.Cookies(), nil
 }
 
 // api/seller/auth/loginByCode
-func (s *bgAuthService) LoginSellerCentralByCode(ctx context.Context, params BgLoginByCodeRequestParams) (bool, error) {
+func (s *bgAuthService) LoginSellerCentralByCode(ctx context.Context, params BgLoginByCodeRequestParams) (bool, []*http.Cookie, error) {
 	if err := params.validate(); err != nil {
-		return false, err
+		return false, nil, err
 	}
 
 	var result = struct {
@@ -184,10 +184,10 @@ func (s *bgAuthService) LoginSellerCentralByCode(ctx context.Context, params BgL
 
 	if err = recheckError(resp, result.Response, err); err != nil {
 		s.client.Logger.Errorf("登录 Seller Central 失败: %v %+v", err, string(resp.Body()))
-		return false, err
+		return false, nil, err
 	}
 
-	return true, nil
+	return true, resp.Cookies(), nil
 }
 
 // 获取登录短信验证码 bg/quiet/api/mms/loginVerifyCode
