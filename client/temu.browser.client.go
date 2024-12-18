@@ -257,7 +257,7 @@ func recheckError(resp *resty.Response, result normal.Response, e error) (err er
 		}
 
 		if errorResult.ErrorMessage != "" {
-			return errors.New(errorResult.ErrorMessage)
+			return normal.GetErrorByCode(errorResult.ErrorCode, errorResult.ErrorMessage).Err
 		}
 
 		var errorResult2 normal.Response2
@@ -266,7 +266,7 @@ func recheckError(resp *resty.Response, result normal.Response, e error) (err er
 		}
 
 		if errorResult2.ErrorMessage != "" {
-			return errors.New(errorResult2.ErrorMessage)
+			return normal.GetErrorByCode(errorResult2.ErrorCode, errorResult2.ErrorMessage).Err
 		}
 
 		return errors.New("unknown error")
