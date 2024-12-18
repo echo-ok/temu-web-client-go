@@ -13,9 +13,10 @@ type TemuErrorCode struct {
 }
 
 var (
-	TemuErrorNeedSMSCode             TemuErrorCode = TemuErrorCode{Code: 6000001, Message: "需要短信验证码"}  // 需要短信验证码
+	TemuErrorNeedSMSCode             TemuErrorCode = TemuErrorCode{Code: 6000001, Message: "账号发生变更"}  // 需要短信验证码
 	TemuErrorNeedVerifyCode          TemuErrorCode = TemuErrorCode{Code: 6000002, Message: "需要图形验证码"}  // 需要图形验证码
 	TemuErrorAccountPasswordNotMatch TemuErrorCode = TemuErrorCode{Code: 40002001, Message: "账号密码不匹配"} // 账号密码不匹配
+ 
 )
 
 func (e *TemuErrorCode) Error() string {
