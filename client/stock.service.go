@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/bestk/temu-helper/entity"
-	"github.com/bestk/temu-helper/normal"
+	"github.com/bestk/temu-web-client/entity"
+	"github.com/bestk/temu-web-client/normal"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"gopkg.in/guregu/null.v4"
 )

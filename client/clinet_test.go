@@ -7,10 +7,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bestk/temu-helper/config"
-	"github.com/bestk/temu-helper/entity"
-	"github.com/bestk/temu-helper/normal"
-	"github.com/bestk/temu-helper/utils"
+	"github.com/bestk/temu-web-client/config"
+	"github.com/bestk/temu-web-client/entity"
+	"github.com/bestk/temu-web-client/normal"
+	"github.com/bestk/temu-web-client/utils"
 	"gopkg.in/guregu/null.v4"
 )
 
