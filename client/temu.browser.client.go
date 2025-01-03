@@ -7,22 +7,26 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/bestk/temu-helper/config"
 	"github.com/bestk/temu-helper/entity"
+	"github.com/bestk/temu-helper/log"
 	"github.com/bestk/temu-helper/normal"
 	"github.com/bestk/temu-helper/utils"
 	"github.com/go-resty/resty/v2"
 )
 
 type service struct {
-	debug      bool          // Is debug mode
-	logger     resty.Logger  // Log
-	httpClient *resty.Client // HTTP client
+	debug               bool          // Is debug mode
+	logger              resty.Logger  // Log
+	httpClient          *resty.Client // HTTP client
+	sellerCentralClient *resty.Client // SellerCentral专用客户端
 }
 
 type services struct {
@@ -39,20 +43,35 @@ type Client struct {
 	TimeLocation         *time.Location
 	BaseUrl              string
 	SellerCentralBaseUrl string
-	SellerCentralClient  *resty.Client // SellerCentral专用客户端
-	BgClient             *resty.Client // BgAuth专用客户端
 	MallId               int
 }
 
-func New(config config.TemuBrowserConfig) *Client {
-	logger := config.Logger
+func NewClient(config config.TemuBrowserConfig) *Client {
+
+	var logger resty.Logger
+
+	var logLevel = new(slog.LevelVar) // 默认 INFO
+	if config.Debug {
+		logLevel.Set(slog.LevelDebug)
+	}
+
+	opts := &slog.HandlerOptions{
+		Level: logLevel,
+	}
+
+	if config.Debug {
+		logger = log.NewSlogAdapter(slog.New(slog.NewTextHandler(os.Stdout, opts)))
+	} else {
+		logger = log.NewSlogAdapter(slog.New(slog.NewJSONHandler(os.Stdout, opts)))
+	}
 
 	client := &Client{
 		Debug:                config.Debug,
-		Logger:               logger,
 		BaseUrl:              config.BaseUrl,
 		SellerCentralBaseUrl: config.SellerCentralBaseUrl,
+		Logger:               logger,
 	}
+
 	loc, err := time.LoadLocation("Asia/Shanghai")
 	if err != nil {
 		logger.Errorf("load location error: %v", err)
@@ -60,7 +79,6 @@ func New(config config.TemuBrowserConfig) *Client {
 	client.TimeLocation = loc
 
 	httpClient := resty.New().
-		SetLogger(logger).
 		SetDebug(config.Debug).
 		EnableTrace().
 		SetBaseURL(config.BaseUrl).
@@ -137,27 +155,14 @@ func New(config config.TemuBrowserConfig) *Client {
 			}
 			return retry
 		})
+
 	if config.Proxy != "" {
 		httpClient.SetProxy(config.Proxy)
 	}
 	httpClient.JSONMarshal = json.Marshal
 	httpClient.JSONUnmarshal = json.Unmarshal
-	xService := service{
-		debug:      config.Debug,
-		logger:     logger,
-		httpClient: httpClient,
-	}
-	client.Services = services{
-		RecentOrderService: recentOrderService{xService, client},
-		BgAuthService:      bgAuthService{xService, client},
-		StockService:       stockService{xService, client},
-		ProductService:     productService{xService, client},
-	}
-
-	client.BgClient = httpClient
 
 	sellerCentralClient := resty.New().
-		SetLogger(logger).
 		SetDebug(config.Debug).
 		EnableTrace().
 		SetBaseURL(config.SellerCentralBaseUrl).
@@ -234,13 +239,27 @@ func New(config config.TemuBrowserConfig) *Client {
 			}
 			return retry
 		})
+
 	if config.Proxy != "" {
 		sellerCentralClient.SetProxy(config.Proxy)
 	}
+
 	sellerCentralClient.JSONMarshal = json.Marshal
 	sellerCentralClient.JSONUnmarshal = json.Unmarshal
-	xService.httpClient = sellerCentralClient
-	client.SellerCentralClient = sellerCentralClient
+
+	xService := service{
+		debug:               config.Debug,
+		logger:              logger,
+		httpClient:          httpClient,
+		sellerCentralClient: sellerCentralClient,
+	}
+
+	client.Services = services{
+		RecentOrderService: recentOrderService{xService, client},
+		BgAuthService:      bgAuthService{xService, client},
+		StockService:       stockService{xService, client},
+		ProductService:     productService{xService, client},
+	}
 
 	return client
 }
@@ -304,62 +323,6 @@ func (c *Client) CheckMallId() error {
 		return errors.New("mall ID is not set")
 	}
 	return nil
-}
-
-func (c *Client) SetSellerCentralCookie(cookies []*http.Cookie, clearOld bool) {
-	if clearOld {
-		c.SellerCentralClient.Cookies = []*http.Cookie{}
-	}
-
-	c.SellerCentralClient.SetCookies(cookies)
-}
-
-func (c *Client) GetSellerCentralCookie() []*http.Cookie {
-	return c.SellerCentralClient.Cookies
-}
-
-func (c *Client) SetAccountCookie(cookies []*http.Cookie, clearOld bool) {
-	if clearOld {
-		c.BgClient.Cookies = []*http.Cookie{}
-	}
-
-	c.BgClient.SetCookies(cookies)
-}
-
-func (c *Client) GetAccountCookie() []*http.Cookie {
-	return c.BgClient.Cookies
-}
-
-func (c *Client) Clone() *Client {
-	newClient := &Client{
-		Debug:                c.Debug,
-		Logger:               c.Logger,
-		TimeLocation:         c.TimeLocation,
-		BaseUrl:              c.BaseUrl,
-		SellerCentralBaseUrl: c.SellerCentralBaseUrl,
-		MallId:               c.MallId,
-	}
-
-	// 克隆 http client
-	newClient.SellerCentralClient = c.SellerCentralClient.Clone()
-	newClient.BgClient = c.BgClient.Clone()
-
-	// 初始化服务
-	xService := service{
-		debug:      c.Debug,
-		logger:     c.Logger,
-		httpClient: newClient.BgClient,
-	}
-
-	// 重新初始化服务层
-	newClient.Services = services{
-		RecentOrderService: recentOrderService{xService, newClient},
-		BgAuthService:      bgAuthService{xService, newClient},
-		StockService:       stockService{xService, newClient},
-		ProductService:     productService{xService, newClient},
-	}
-
-	return newClient
 }
 
 func (c *Client) IsAccountSessionInvalid() bool {

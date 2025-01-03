@@ -176,7 +176,7 @@ func (s *bgAuthService) LoginSellerCentralByCode(ctx context.Context, params BgL
 		} `json:"result"`
 	}{}
 
-	resp, err := s.client.SellerCentralClient.R().
+	resp, err := s.sellerCentralClient.R().
 		SetContext(ctx).
 		SetResult(&result).
 		SetBody(params).
@@ -229,7 +229,7 @@ func (s *bgAuthService) GetSellerCentralUserInfo(ctx context.Context) (entity.Us
 		return entity.UserInfo{}, err
 	}
 
-	resp, err := s.client.SellerCentralClient.R().
+	resp, err := s.sellerCentralClient.R().
 		SetContext(ctx).
 		SetHeader("mallid", fmt.Sprintf("%d", s.client.MallId)).
 		SetBody(map[string]interface{}{}).
@@ -259,7 +259,7 @@ func (s *bgAuthService) GetAccountUserInfo(ctx context.Context) ([]entity.Accoun
 		} `json:"result"`
 	}{}
 
-	resp, err := s.client.BgClient.R().
+	resp, err := s.httpClient.R().
 		SetContext(ctx).
 		SetResult(&result).
 		SetBody(map[string]interface{}{}).

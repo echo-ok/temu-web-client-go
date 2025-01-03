@@ -43,7 +43,7 @@ func (s recentOrderService) Query(ctx context.Context, params RecentOrderQueryPa
 		return nil, 0, 0, false, err
 	}
 
-	resp, err := s.client.SellerCentralClient.R().
+	resp, err := s.sellerCentralClient.R().
 		SetResult(&result).
 		SetContext(ctx).
 		SetHeader("mallid", fmt.Sprintf("%d", s.client.MallId)).
