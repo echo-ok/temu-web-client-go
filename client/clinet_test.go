@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"testing"
@@ -11,8 +12,28 @@ import (
 	"github.com/bestk/temu-web-client/entity"
 	"github.com/bestk/temu-web-client/normal"
 	"github.com/bestk/temu-web-client/utils"
+	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
+
+var temuClient *Client
+
+var ctx = context.Background()
+
+func TestMain(m *testing.M) {
+	b, err := os.ReadFile("../config/config_test.json")
+	if err != nil {
+		panic(fmt.Sprintf("Read config error: %s", err.Error()))
+	}
+	var cfg config.TemuBrowserConfig
+	err = json.Unmarshal(b, &cfg)
+	if err != nil {
+		panic(fmt.Sprintf("Parse config file error: %s", err.Error()))
+	}
+
+	temuClient = NewClient(cfg)
+	m.Run()
+}
 
 func TestGetAntiContent(t *testing.T) {
 	antiContent, err := utils.GetAntiContent()
@@ -28,21 +49,9 @@ func TestGetAntiContent(t *testing.T) {
 
 // 测试登录
 func TestLogin(t *testing.T) {
-	b, err := os.ReadFile("../config/config_test.json")
-	if err != nil {
-		panic(fmt.Sprintf("Read config error: %s", err.Error()))
-	}
-	var cfg config.TemuBrowserConfig
-	err = json.Unmarshal(b, &cfg)
-	if err != nil {
-		panic(fmt.Sprintf("Parse config file error: %s", err.Error()))
-	}
-
-	temuClient := NewClient(cfg)
-	ctx := context.Background()
-
 	loginName := ""
 	password := ""
+	mallId := 0
 	verifyCode := null.NewString("", false)
 
 	publicKey, _, err := temuClient.Services.BgAuthService.GetPublicKey()
@@ -64,7 +73,7 @@ func TestLogin(t *testing.T) {
 
 	accountId, cookies, err := temuClient.Services.BgAuthService.Login(ctx, bgLoginRequestParams)
 	if err != nil {
-		if err == normal.ErrNeedSMSCode {
+		if errors.Is(err, normal.ErrNeedSMSCode) {
 			t.Logf("需要短信验证码: %v", err)
 			// success, err := temuClient.Services.BgAuthService.GetLoginVerifyCode(ctx, BgGetLoginVerifyCodeRequestParams{
 			// 	Mobile: loginName,
@@ -105,8 +114,9 @@ func TestLogin(t *testing.T) {
 	loginByCodeParams := BgLoginByCodeRequestParams{
 		Code:         code,
 		Confirm:      false,
-		TargetMallId: 634418212175626,
+		TargetMallId: mallId,
 	}
+	temuClient.SetMallId(mallId)
 	success, _, err := temuClient.Services.BgAuthService.LoginSellerCentralByCode(ctx, loginByCodeParams)
 	if err != nil {
 		t.Errorf("登录 Seller Central 失败: %v", err)
@@ -120,10 +130,10 @@ func TestLogin(t *testing.T) {
 		panic(err)
 	}
 	t.Logf("获取用户信息成功: %+v", userInfo)
+}
 
-	// 设置mallId
-	temuClient.SetMallId(634418219352192)
-
+func TestRecentOrder(t *testing.T) {
+	TestLogin(t)
 	// 查询订单列表
 	params := RecentOrderQueryParams{
 		QueryType:           null.NewInt(entity.RecentOrderStatusUnshipped, true),
@@ -159,5 +169,14 @@ func TestLogin(t *testing.T) {
 		jsonString, _ := json.Marshal(stock)
 		t.Logf("库存信息: %+v", string(jsonString))
 	}
+}
 
+func TestCustomizedInformation(t *testing.T) {
+	TestLogin(t)
+	gotItems, gotTotal, gotTotalPages, gotIsLastPage, err := temuClient.Services.CustomizedInformationService.Query(context.Background(), CustomizedInformationQueryParams{SubPurchaseOrderSns: []string{"WB2507101860720"}})
+	assert.Equal(t, err, nil)
+	assert.Equal(t, 2, len(gotItems))
+	assert.Equal(t, 2, gotTotal)
+	assert.Equal(t, 1, gotTotalPages)
+	assert.Equal(t, true, gotIsLastPage)
 }
