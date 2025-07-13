@@ -1,4 +1,4 @@
-module github.com/bestk/temu-web-client
+module github.com/bestK/temu-web-client
 
 go 1.22
 
