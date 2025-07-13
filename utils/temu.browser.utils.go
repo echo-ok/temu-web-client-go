@@ -123,14 +123,14 @@ func executeJS(vm *goja.Runtime, userAgent string) (string, error) {
 	}
 
 	// 执行 JS 文件内容
-	if _, err := vm.RunString(string(jsContent)); err != nil {
+	if _, err = vm.RunString(string(jsContent)); err != nil {
 		return "", fmt.Errorf("执行JS失败: %v", err)
 	}
 
 	// 更新 navigator.userAgent
 	// 获取全局 window 对象
 	window := vm.Get("window").ToObject(vm)
-	if err := setNavigator(window, userAgent); err != nil {
+	if err = setNavigator(window, userAgent); err != nil {
 		return "", fmt.Errorf("更新userAgent失败: %v", err)
 	}
 
