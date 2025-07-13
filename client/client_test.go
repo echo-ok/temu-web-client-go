@@ -180,3 +180,10 @@ func TestCustomizedInformation(t *testing.T) {
 	assert.Equal(t, 1, gotTotalPages)
 	assert.Equal(t, true, gotIsLastPage)
 }
+
+func TestFinanceAccountFunds(t *testing.T) {
+	TestLogin(t)
+	accountFunds, err := temuClient.Services.FinanceService.AccountFunds(ctx)
+	assert.Equal(t, err, nil)
+	assert.Equal(t, "13950.20", accountFunds.TotalAmount)
+}
