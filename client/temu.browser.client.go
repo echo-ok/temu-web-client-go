@@ -35,6 +35,7 @@ type services struct {
 	StockService                 stockService
 	ProductService               productService
 	CustomizedInformationService customizedInformationService
+	FinanceService               financeService
 }
 
 type Client struct {
@@ -261,6 +262,7 @@ func NewClient(config config.TemuBrowserConfig) *Client {
 		StockService:                 stockService{xService, client},
 		ProductService:               productService{xService, client},
 		CustomizedInformationService: customizedInformationService{xService, client},
+		FinanceService:               financeService{xService, client},
 	}
 
 	return client
