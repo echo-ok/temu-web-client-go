@@ -173,7 +173,7 @@ func TestRecentOrder(t *testing.T) {
 
 func TestCustomizedInformation(t *testing.T) {
 	TestLogin(t)
-	gotItems, gotTotal, gotTotalPages, gotIsLastPage, err := temuClient.Services.CustomizedInformationService.Query(context.Background(), CustomizedInformationQueryParams{SubPurchaseOrderSns: []string{"WB2507101860720"}})
+	gotItems, gotTotal, gotTotalPages, gotIsLastPage, err := temuClient.Services.CustomizedInformationService.Query(ctx, CustomizedInformationQueryParams{SubPurchaseOrderSns: []string{"WB2507101860720"}})
 	assert.Equal(t, err, nil)
 	assert.Equal(t, 2, len(gotItems))
 	assert.Equal(t, 2, gotTotal)
