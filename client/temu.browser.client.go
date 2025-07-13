@@ -30,10 +30,11 @@ type service struct {
 }
 
 type services struct {
-	RecentOrderService recentOrderService
-	BgAuthService      bgAuthService
-	StockService       stockService
-	ProductService     productService
+	RecentOrderService           recentOrderService
+	BgAuthService                bgAuthService
+	StockService                 stockService
+	ProductService               productService
+	CustomizedInformationService customizedInformationService
 }
 
 type Client struct {
@@ -255,10 +256,11 @@ func NewClient(config config.TemuBrowserConfig) *Client {
 	}
 
 	client.Services = services{
-		RecentOrderService: recentOrderService{xService, client},
-		BgAuthService:      bgAuthService{xService, client},
-		StockService:       stockService{xService, client},
-		ProductService:     productService{xService, client},
+		RecentOrderService:           recentOrderService{xService, client},
+		BgAuthService:                bgAuthService{xService, client},
+		StockService:                 stockService{xService, client},
+		ProductService:               productService{xService, client},
+		CustomizedInformationService: customizedInformationService{xService, client},
 	}
 
 	return client
