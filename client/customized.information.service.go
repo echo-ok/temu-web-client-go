@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/bestk/temu-web-client/entity"
-	"github.com/bestk/temu-web-client/normal"
+	"github.com/bestK/temu-web-client/entity"
+	"github.com/bestK/temu-web-client/normal"
 )
 
 // 全托定制信息服务

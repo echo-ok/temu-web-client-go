@@ -14,11 +14,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/bestk/temu-web-client/config"
-	"github.com/bestk/temu-web-client/entity"
-	"github.com/bestk/temu-web-client/log"
-	"github.com/bestk/temu-web-client/normal"
-	"github.com/bestk/temu-web-client/utils"
+	"github.com/bestK/temu-web-client/config"
+	"github.com/bestK/temu-web-client/entity"
+	"github.com/bestK/temu-web-client/log"
+	"github.com/bestK/temu-web-client/normal"
+	"github.com/bestK/temu-web-client/utils"
 	"github.com/go-resty/resty/v2"
 )
 
@@ -49,9 +49,7 @@ type Client struct {
 }
 
 func NewClient(config config.TemuBrowserConfig) *Client {
-
 	var logger resty.Logger
-
 	var logLevel = new(slog.LevelVar) // 默认 INFO
 	if config.Debug {
 		logLevel.Set(slog.LevelDebug)
@@ -284,7 +282,7 @@ func recheckError(resp *resty.Response, result normal.Response, e error) (err er
 		}
 
 		var errorResult2 normal.Response2
-		if err := json.Unmarshal(resp.Body(), &errorResult2); err != nil {
+		if err = json.Unmarshal(resp.Body(), &errorResult2); err != nil {
 			return fmt.Errorf("failed to parse error response: %v", err)
 		}
 
