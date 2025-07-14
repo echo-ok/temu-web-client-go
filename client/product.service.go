@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/bestk/temu-web-client/entity"
-	"github.com/bestk/temu-web-client/normal"
+	"github.com/bestK/temu-web-client/entity"
+	"github.com/bestK/temu-web-client/normal"
 	"gopkg.in/guregu/null.v4"
 )
 

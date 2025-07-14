@@ -1,7 +1,7 @@
 package normal
 
 import (
-	"github.com/bestk/temu-web-client/entity"
+	"github.com/bestK/temu-web-client/entity"
 )
 
 type Pager struct {

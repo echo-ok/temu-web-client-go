@@ -8,10 +8,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/bestk/temu-web-client/config"
-	"github.com/bestk/temu-web-client/entity"
-	"github.com/bestk/temu-web-client/normal"
-	"github.com/bestk/temu-web-client/utils"
+	"github.com/bestK/temu-web-client/config"
+	"github.com/bestK/temu-web-client/entity"
+	"github.com/bestK/temu-web-client/normal"
+	"github.com/bestK/temu-web-client/utils"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
