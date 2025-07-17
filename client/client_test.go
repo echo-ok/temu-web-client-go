@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -12,6 +11,7 @@ import (
 	"github.com/bestK/temu-web-client/entity"
 	"github.com/bestK/temu-web-client/normal"
 	"github.com/bestK/temu-web-client/utils"
+	"github.com/goccy/go-json"
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/guregu/null.v4"
 )
