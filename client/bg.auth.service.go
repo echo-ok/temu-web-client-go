@@ -3,13 +3,13 @@ package client
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/bestK/temu-web-client/entity"
 	"github.com/bestK/temu-web-client/normal"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/goccy/go-json"
 )
 
 type bgAuthService struct {
