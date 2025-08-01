@@ -3,6 +3,7 @@ package entity
 import (
 	"fmt"
 
+	gci "github.com/echo-ok/goods-customization-information"
 	"gopkg.in/guregu/null.v4"
 )
 
@@ -74,6 +75,66 @@ func (rci RawCustomizedInformation) Parse() (ci CustomizedInformation, err error
 			return ci, fmt.Errorf("unknown preview type: %d", previewItem.PreviewType)
 		}
 	}
+	return
+}
+
+// NormalizedParse 定制信息解析
+func (rci RawCustomizedInformation) NormalizedParse() (g gci.GoodsCustomizedInformation, err error) {
+	if len(rci.CustomizedPreviewItems) == 0 {
+		return g, fmt.Errorf("no preview items")
+	}
+
+	g = gci.NewGoodsCustomizedInformation()
+	g.SetRawData(rci)
+	surface := gci.NewSurface() // Temu 都只支持一个面的定制
+	kvRegion := make(map[string]gci.Region)
+	for _, previewItem := range rci.CustomizedPreviewItems {
+		if previewItem.PreviewType == 1 {
+			// Preview image
+			if previewItem.ImageUrlDisplay.Valid {
+				image, e := gci.NewImage(previewItem.ImageUrlDisplay.String, false)
+				if e != nil {
+					image.SetError(e)
+				}
+				surface.PreviewImage = &image
+			}
+			continue
+		}
+		var region gci.Region
+		regionId := previewItem.RegionId.ValueOrZero()
+		if v, ok := kvRegion[regionId]; ok {
+			region = v
+		} else {
+			region = gci.NewRegion(regionId)
+		}
+		switch previewItem.PreviewType {
+		case 3: // Upload image
+			if !previewItem.ImageUrlDisplay.Valid {
+				return g, fmt.Errorf("%s ImageUrlDisplay value is empty", regionId)
+			}
+			image, e := gci.NewImage(previewItem.ImageUrlDisplay.String, false)
+			if e != nil {
+				image.SetError(e)
+			}
+			region.AddImage(image)
+		case 4: // Customization text
+			if !previewItem.CustomizedText.Valid {
+				return g, fmt.Errorf("%s customizationF text is empty", regionId)
+			}
+			text, e := gci.NewText("", previewItem.CustomizedText.String)
+			if e != nil {
+				region.SetError(e)
+			}
+			region.AddText(text)
+		default:
+			return g, fmt.Errorf("unknown preview type: %d", previewItem.PreviewType)
+		}
+		kvRegion[regionId] = region
+	}
+	for _, region := range kvRegion {
+		surface.AddRegion(region)
+	}
+	g.AddSurface(surface)
 	return
 }
 
