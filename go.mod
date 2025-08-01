@@ -23,3 +23,5 @@ require (
 	golang.org/x/text v0.27.0 // indirect
 	gopkg.in/guregu/null.v4 v4.0.0
 )
+
+require github.com/echo-ok/goods-customization-information v0.0.0-20250801033906-eef2246da89e
