@@ -96,7 +96,7 @@ func (rci RawCustomizedInformation) NormalizedParse() (g gci.GoodsCustomizedInfo
 				if e != nil {
 					image.SetError(e)
 				}
-				surface.PreviewImage = &image
+				surface.SetPreviewImage(image)
 			}
 			continue
 		}

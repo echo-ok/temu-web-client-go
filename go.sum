@@ -9,8 +9,8 @@ github.com/dlclark/regexp2 v1.11.5 h1:Q/sSnsKerHeCkc/jSTNq1oCm7KiVgUMZRDUoRu0JQZ
 github.com/dlclark/regexp2 v1.11.5/go.mod h1:DHkYz0B9wPfa6wondMfaivmHpzrQ3v9q8cnmRbL6yW8=
 github.com/dop251/goja v0.0.0-20250630131328-58d95d85e994 h1:aQYWswi+hRL2zJqGacdCZx32XjKYV8ApXFGntw79XAM=
 github.com/dop251/goja v0.0.0-20250630131328-58d95d85e994/go.mod h1:MxLav0peU43GgvwVgNbLAj1s/bSGboKkhuULvq/7hx4=
-github.com/echo-ok/goods-customization-information v0.0.0-20250801033906-eef2246da89e h1:fIs2xsTVDcOMHI716zXq/0ouR2C/lIn5B1tiewIGqXU=
-github.com/echo-ok/goods-customization-information v0.0.0-20250801033906-eef2246da89e/go.mod h1:2QCwPrNWvuaAFdyxFfZccHlxlcemJJNWPoJP8pCg5gA=
+github.com/echo-ok/goods-customization-information v0.0.0-20250808031225-292eaeb6905b h1:OkuOVmKkB+i/yTlbYeKwstUmTcnEYQGVWw0wO7c42zo=
+github.com/echo-ok/goods-customization-information v0.0.0-20250808031225-292eaeb6905b/go.mod h1:2QCwPrNWvuaAFdyxFfZccHlxlcemJJNWPoJP8pCg5gA=
 github.com/go-ozzo/ozzo-validation/v4 v4.3.0 h1:byhDUpfEwjsVQb1vBunvIjh2BHQ9ead57VkAEY4V+Es=
 github.com/go-ozzo/ozzo-validation/v4 v4.3.0/go.mod h1:2NKgrcHl3z6cJs+3Oo940FPRiTzuqKbvfrL2RxCj6Ew=
 github.com/go-resty/resty/v2 v2.16.5 h1:hBKqmWrr7uRc3euHVqmh1HTHcKn99Smr7o5spptdhTM=

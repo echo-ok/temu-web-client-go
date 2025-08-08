@@ -24,4 +24,4 @@ require (
 	gopkg.in/guregu/null.v4 v4.0.0
 )
 
-require github.com/echo-ok/goods-customization-information v0.0.0-20250801033906-eef2246da89e
+require github.com/echo-ok/goods-customization-information v0.0.0-20250808031225-292eaeb6905b
