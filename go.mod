@@ -11,7 +11,7 @@ require (
 	github.com/goccy/go-json v0.10.5
 	github.com/google/pprof v0.0.0-20250630185457-6e76a2b096b5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/net v0.43.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
@@ -20,8 +20,8 @@ require (
 	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/go-resty/resty/v2 v2.16.5
 	github.com/stretchr/testify v1.10.0
-	golang.org/x/text v0.27.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	gopkg.in/guregu/null.v4 v4.0.0
 )
 
-require github.com/echo-ok/goods-customization-information v0.0.0-20250801033906-eef2246da89e
+require github.com/echo-ok/goods-customization-information v0.0.0-20250808055509-447331d8cd77

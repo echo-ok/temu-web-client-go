@@ -96,7 +96,7 @@ func (rci RawCustomizedInformation) NormalizedParse() (g gci.GoodsCustomizedInfo
 				if e != nil {
 					image.SetError(e)
 				}
-				surface.PreviewImage = &image
+				surface.SetPreviewImage(image)
 			}
 			continue
 		}
@@ -119,7 +119,7 @@ func (rci RawCustomizedInformation) NormalizedParse() (g gci.GoodsCustomizedInfo
 			region.AddImage(image)
 		case 4: // Customization text
 			if !previewItem.CustomizedText.Valid {
-				return g, fmt.Errorf("%s customizationF text is empty", regionId)
+				return g, fmt.Errorf("%s customization text is empty", regionId)
 			}
 			text, e := gci.NewText("", previewItem.CustomizedText.String)
 			if e != nil {
